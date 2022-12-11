@@ -1,6 +1,8 @@
 import Head from "next/head";
+import { useSession } from "@supabase/auth-helpers-react"
 
 export default function Home() {
+
   return (
     <div>
       <Head>
