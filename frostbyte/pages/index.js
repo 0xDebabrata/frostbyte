@@ -1,5 +1,4 @@
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
 import { useState } from "react";
 import App from "../pages/projectCard.js";
 import { useSession } from "@supabase/auth-helpers-react";
