@@ -1,7 +1,26 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-
+import { useState } from "react";
+import App from "../pages/projectCard.js";
 export default function Home() {
+  const array = [
+    { projectID: 1, projectName: "First Project" },
+    { projectID: 2, projectName: "Second Project" },
+    { projectID: 3, projectName: "Third  Project" },
+    { projectID: 4, projectName: "fourth  Project" },
+    { projectID: 5, projectName: "fifth Project" },
+    { projectID: 6, projectName: "sixth  Project" },
+    { projectID: 7, projectName: "seventh  Project" },
+  ];
+
+  function showCard(val) {
+    return (
+      <App>
+        projectID = {val.projectID}
+        projectName= {val.projectName}
+      </App>
+    );
+  }
   return (
     <div className={styles.container}>
       <Head>
@@ -11,9 +30,13 @@ export default function Home() {
       </Head>
 
       <main>
-        <h1 className='text-5xl font-bold bg-gray-200 text-center'>
-          Frostbyte
-        </h1>
+        <div>
+          <h1 className='text-5xl font-bold bg-gray-200 text-center'>
+            Frostbyte
+          </h1>
+          <br></br>
+        </div>
+        {array.map(showCard)}
       </main>
     </div>
   );
