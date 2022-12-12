@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useSession } from "@supabase/auth-helpers-react";
 
 import Card from "../components/ProjectCard.js";
+import Form from "../components/Forms.js";
 
 export default function Home() {
   const array = [
@@ -31,8 +32,13 @@ export default function Home() {
           <br></br>
         </div>
         {array.map((project, idx) => {
-          return <Card key={idx} id={project.projectID} name={project.projectName} />
+          return (
+            <Card key={idx} id={project.projectID} name={project.projectName} />
+          );
         })}
+        <br />
+        <br />
+        <Form />
       </main>
     </div>
   );
