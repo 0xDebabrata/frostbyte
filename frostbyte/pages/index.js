@@ -1,7 +1,9 @@
 import Head from "next/head";
 import { useState } from "react";
-import App from "../pages/projectCard.js";
 import { useSession } from "@supabase/auth-helpers-react";
+
+import Card from "../components/ProjectCard.js";
+
 export default function Home() {
   const array = [
     { projectID: 1, projectName: "First Project" },
@@ -13,14 +15,6 @@ export default function Home() {
     { projectID: 7, projectName: "seventh  Project" },
   ];
 
-  function showCard(val) {
-    return (
-      <App>
-        projectID = {val.projectID}
-        projectName= {val.projectName}
-      </App>
-    );
-  }
   return (
     <div>
       <Head>
@@ -36,7 +30,9 @@ export default function Home() {
           </h1>
           <br></br>
         </div>
-        {array.map(showCard)}
+        {array.map((project, idx) => {
+          return <Card key={idx} id={project.projectID} name={project.projectName} />
+        })}
       </main>
     </div>
   );
