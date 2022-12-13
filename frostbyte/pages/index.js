@@ -45,7 +45,7 @@ export default function Home({ projects: projectsSSR }) {
       )}
 
       {(projects && projects.length > 0) && (
-        <div className="flex justify-center max-w-[800px] mx-auto">
+        <div className="flex justify-center max-w-[800px] mx-auto px-10">
           {projects.map((project, idx) => {
             return (
               <Card key={idx} id={project.id} name={project.name} />

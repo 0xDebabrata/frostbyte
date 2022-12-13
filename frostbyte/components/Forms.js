@@ -96,7 +96,7 @@ export default function Form() {
                     Project details
                   </Dialog.Title>
                   <form onSubmit={handleSubmit}>
-                    <label htmlFor='projectName' className="text-zinc-400">Project Name</label>
+                    <label htmlFor='projectName' className="text-zinc-400 font-light text-sm">Project Name</label>
                     <br />
                     <input type='text' 
                       className="px-2 py-1 text-sm mt-1 mb-2 w-full rounded bg-zinc-700 font-light text-zinc-300 border border-zinc-600 focus:outline-none focus:border-zinc-500"
@@ -105,7 +105,7 @@ export default function Form() {
                       onChange={e => setName(e.target.value)}
                     /> 
                     <br />
-                    <label htmlFor='supabaseUrl' className="text-zinc-400">Supabase Project URL</label>
+                    <label htmlFor='supabaseUrl' className="text-zinc-400 font-light text-sm">Supabase Project URL</label>
                     <br />
                     <input type='text'
                       className="px-2 py-1 text-sm mt-1 mb-2 w-full rounded font-light bg-zinc-700 text-zinc-300 border border-zinc-600 focus:outline-none focus:border-zinc-500"
@@ -114,7 +114,7 @@ export default function Form() {
                       onChange={e => setUrl(e.target.value)}
                     />
                     <br />
-                    <label htmlFor='secretKey' className="text-zinc-400 font-light">Supabase Secret Key </label>
+                    <label htmlFor='secretKey' className="text-zinc-400 font-light text-sm">Supabase Secret Key </label>
                     <br />
                     <input type='password'
                       className="px-2 py-1 text-sm mt-1 w-full rounded bg-zinc-700 text-zinc-300 border border-zinc-600 focus:outline-none focus:border-zinc-500"
@@ -125,7 +125,7 @@ export default function Form() {
                     <br />
                     <button 
                       type="submit"
-                      className='w-full py-1 mt-5 bg-zinc-300 text-zinc-800 rounded hover:bg-zinc-200 duration-150'>
+                      className='w-full py-1 mt-8 bg-zinc-300 text-zinc-800 rounded hover:bg-zinc-200 duration-150'>
                       Submit
                     </button>
                   </form>
