@@ -40,13 +40,13 @@ export default function Home({ projects: projectsSSR }) {
 
   return (
     <div className="bg-zinc-800 min-h-[calc(100vh-54px)] ">
-      {(projects && projects.length == 0) && (
+      {(projects && projects.length === 0) && (
         <>
           <p className="text-center text-zinc-300">
-            Looks like you don't have any projects yet :(
+            Looks like you don&apos;t have any projects yet :(
           </p>
           <p className="text-center text-zinc-300">
-            Get started by connecting a Supabase project now!
+            Get started by connecting your Supabase project now!
           </p>
         </>
       )}
