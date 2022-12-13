@@ -24,7 +24,7 @@ const Button = () => {
   if (session) {
     return (
       <button onClick={handleLogout}
-        className="rounded bg-zinc-700 py-1 px-4 text-zinc-300 mr-4 text-sm duration-150 hover:bg-zinc-600 border border-zinc-600"
+        className="rounded py-1 px-4 text-zinc-300 mr-4 text-sm duration-150 hover:bg-zinc-700 border border-zinc-600"
       >
         Logout
       </button>

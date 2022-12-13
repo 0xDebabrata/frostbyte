@@ -1,6 +1,5 @@
-// TODO: Protect API route
-// TODO: Get user_id from request
 import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto"
+import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs"
 
 const algorithm = "aes-256-cbc"
 const key = new Buffer.from(process.env.AES_KEY, "hex")
@@ -23,7 +22,16 @@ const decrypt = (hexEncrypted) => {
 */
 
 export default async function handler(req, res) {
-  const { name, url, secret } = req.body
+  const supabase = createServerSupabaseClient({ req, res })
+  const { data: { session }} = await supabase.auth.getSession()
+
+  if (!session) {
+    return res.status(401).json({
+      error: "Not authorised",
+    })
+  }
+
+  const { name, url, secret } = JSON.parse(req.body)
 
   if (!name || !url || !secret) {
     res.status(404).json({ error: "Insufficient data" })
@@ -31,7 +39,7 @@ export default async function handler(req, res) {
   }
 
   return new Promise((resolve, reject) => {
-    randomBytes(16, (err, buf) => {
+    randomBytes(16, async (err, buf) => {
       if (err) {
         res.status(500).json({ error: err })
         reject()
@@ -39,8 +47,20 @@ export default async function handler(req, res) {
         // Generate project API key for Frostbyte
         const apiKey = `frost_${buf.toString("hex")}`
         const { encrypted: encrypted_secret, iv } = encrypt(secret)
-        res.status(200).json({ key: apiKey, encrypted: encrypted_secret, iv })
-        resolve()
+        
+        const { error } = await supabase
+          .from('projects')
+          .insert([
+            { user_id: session.user.id, api_key: apiKey, name, supabase_url: url, supabase_secret: encrypted_secret, iv },
+          ])
+
+        if (error) {
+          res.status(500).json({})
+          reject()
+        } else {
+          res.status(200).json({})
+          resolve()
+        }
       }
     })
   })
