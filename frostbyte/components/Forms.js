@@ -99,22 +99,22 @@ export default function Form() {
                     <label htmlFor='projectName' className="text-zinc-400">Project Name</label>
                     <br />
                     <input type='text' 
-                      className="px-2 py-1 text-sm mt-1 mb-2 w-full rounded bg-zinc-700 text-zinc-300 border border-zinc-600 focus:outline-none focus:border-zinc-500"
+                      className="px-2 py-1 text-sm mt-1 mb-2 w-full rounded bg-zinc-700 font-light text-zinc-300 border border-zinc-600 focus:outline-none focus:border-zinc-500"
                       required
                       value={name}
                       onChange={e => setName(e.target.value)}
                     /> 
                     <br />
-                    <label htmlFor='supabaseUrl' className="text-zinc-400">Supabase project URL</label>
+                    <label htmlFor='supabaseUrl' className="text-zinc-400">Supabase Project URL</label>
                     <br />
                     <input type='text'
-                      className="px-2 py-1 text-sm mt-1 mb-2 w-full rounded bg-zinc-700 text-zinc-300 border border-zinc-600 focus:outline-none focus:border-zinc-500"
+                      className="px-2 py-1 text-sm mt-1 mb-2 w-full rounded font-light bg-zinc-700 text-zinc-300 border border-zinc-600 focus:outline-none focus:border-zinc-500"
                       required
                       value={url}
                       onChange={e => setUrl(e.target.value)}
                     />
                     <br />
-                    <label htmlFor='secretKey' className="text-zinc-400">Supabase Secret Key </label>
+                    <label htmlFor='secretKey' className="text-zinc-400 font-light">Supabase Secret Key </label>
                     <br />
                     <input type='password'
                       className="px-2 py-1 text-sm mt-1 w-full rounded bg-zinc-700 text-zinc-300 border border-zinc-600 focus:outline-none focus:border-zinc-500"
