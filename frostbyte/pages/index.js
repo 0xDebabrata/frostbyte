@@ -11,13 +11,6 @@ export default function Home({ projects: projectsSSR }) {
 
   const [projects, setProjects] = useState(projectsSSR)
 
-  const array = [
-    { projectID: 1, projectName: "First Project" },
-    { projectID: 2, projectName: "Second Project" },
-    { projectID: 3, projectName: "Third  Project" },
-    { projectID: 4, projectName: "fourth  Project" },
-  ];
-
   useEffect(() => {
     async function loadProjects() {
       const { data } = await supabaseClient.from("projects").select("id, name")
@@ -51,15 +44,17 @@ export default function Home({ projects: projectsSSR }) {
         </>
       )}
 
-      <div className="flex justify-center max-w-[800px] mx-auto">
-        {array.map((project, idx) => {
-          return (
-            <Card key={idx} id={project.projectID} name={project.projectName} />
-          );
-        })}
-      </div>
-      <Form />
+      {(projects && projects.length > 0) && (
+        <div className="flex justify-center max-w-[800px] mx-auto">
+          {projects.map((project, idx) => {
+            return (
+              <Card key={idx} id={project.id} name={project.name} />
+            );
+          })}
+        </div>
+      )}
 
+      <Form />
     </div>
   );
 }
