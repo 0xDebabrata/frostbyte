@@ -1,9 +1,12 @@
 import Image from "next/image"
+import { useRouter } from "next/router"
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
 
 
 export default function Form() {
+  const router = useRouter()
+
   const [isOpen, setIsOpen] = useState(false)
   const [name, setName] = useState("")
   const [url, setUrl] = useState("")
@@ -17,15 +20,18 @@ export default function Form() {
     setIsOpen(true)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
-    fetch("/api/create-project", {
+    const response = await fetch("/api/create-project", {
       method: "POST",
       body: JSON.stringify({
-        name, url, secret: key
+        name: name.trim(), url: url.trim(), secret: key.trim()
       })
     })
+    const { id } = await response.json()
+    router.push(`/project/${id}`)
+
     setName("")
     setUrl("")
     setKey("")

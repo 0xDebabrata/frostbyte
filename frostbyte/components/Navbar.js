@@ -1,13 +1,16 @@
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react"
 import Link from "next/link"
+import { useRouter } from "next/router"
 
 export default function Navbar() {
 
   return (
     <div className="flex items-center justify-between bg-zinc-800 p-3">
-      <h1 className="text-zinc-200 ml-4 text-xl">
-        ❄️   Frostbyte
-      </h1>
+      <Link href="/" className="cursor-default">
+        <h1 className="text-zinc-200 ml-4 text-xl">
+          ❄️   Frostbyte
+        </h1>
+      </Link>
       <Button />
     </div>
   )
@@ -16,9 +19,11 @@ export default function Navbar() {
 const Button = () => {
   const session = useSession()
   const supabase = useSupabaseClient()
+  const router = useRouter()
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
+    router.push("/")
   }
 
   if (session) {

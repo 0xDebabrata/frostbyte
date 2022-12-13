@@ -48,17 +48,20 @@ export default async function handler(req, res) {
         const apiKey = `frost_${buf.toString("hex")}`
         const { encrypted: encrypted_secret, iv } = encrypt(secret)
         
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('projects')
           .insert([
             { user_id: session.user.id, api_key: apiKey, name, supabase_url: url, supabase_secret: encrypted_secret, iv },
           ])
+          .select()
+
+        const projectId = data[0].id
 
         if (error) {
           res.status(500).json({})
           reject()
         } else {
-          res.status(200).json({})
+          res.status(200).json({ id: projectId })
           resolve()
         }
       }
