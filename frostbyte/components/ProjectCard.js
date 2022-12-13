@@ -1,10 +1,11 @@
+import Link from "next/link"
+
 export default function Card({ id, name }) {
   return (
-    <div>
-      <div className='text-2xl text-center bg-yellow-100'>
-        <h1>{ name }</h1>
+    <Link href={`/project/${id}`}>
+      <div className="text-xl m-2 bg-zinc-700 border border-zinc-600 rounded p-4 pr-10 duration-150 hover:bg-zinc-600">
+        <h2 className="text-zinc-200 text-base">{ name }</h2>
       </div>
-      <div></div>
-    </div>
+    </Link>
   );
 }

@@ -28,7 +28,7 @@ export default function Home({ projects: projectsSSR }) {
     if (user && !projects) loadProjects()
   }, [user])
 
-  if (!user) {
+  if (!user && !projects) {
     return (
       <div>
         <main>
@@ -39,17 +39,15 @@ export default function Home({ projects: projectsSSR }) {
   }
 
   return (
-    <div>
-      <main>
+    <div className="bg-zinc-800">
+      <div className="flex justify-center max-w-[800px] min-h-[calc(100vh-54px)] mx-auto">
         {array.map((project, idx) => {
           return (
             <Card key={idx} id={project.projectID} name={project.projectName} />
           );
         })}
-        <br />
-        <br />
-        <Form />
-      </main>
+        {/*<Form />*/}
+      </div>
     </div>
   );
 }
