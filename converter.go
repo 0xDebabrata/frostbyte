@@ -37,22 +37,23 @@ func (q *JobQueue) IsEmpty() bool {
 }
 
 func submitHandler(w http.ResponseWriter, r *http.Request) {
-  // parse the request body
-  var data Job
-  if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
-    http.Error(w, err.Error(), http.StatusBadRequest)
-    return
-  }
   
-  // parse the JSON document
-  if err := json.Unmarshal([]byte(jsonStr), &job); err != nil {
-    panic("There was an error while trying to Unmarshal the JSON request --Details: ", err)
+  // Parse the JSON from the request body
+  var data struct {
+    ID         string `json:"ID"`
+    InputURL   string `json:"InputURL"`
+    OutputCodec string `json:"OutputCodec"`
   }
-  
+  err := json.NewDecoder(r.Body).Decode(&data)
+  if err != nil {
+    fmt.Println("There was a problem trying to parse JSON data --Details: ", err)
+  }
+
+  //print the data recieved
+  fmt.Println(data)
+
   // write a response
   w.WriteHeader(http.StatusOK)
-  w.Header().Set("Content-Type", "application/json")
-  json.NewEncoder(w).Encode(responseData)
 }
 
 func main() {
@@ -70,6 +71,6 @@ func main() {
 
 	// Run the command and print any errors
 	if err := cmd.Run(); err != nil {
-		panic("An error occurred while trying to execute the command --Details: ", err)
+		fmt.Println("An error occurred while trying to execute the command --Details: ", err)
 	}
 }
