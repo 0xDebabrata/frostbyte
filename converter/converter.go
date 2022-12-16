@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"encoding/json"
 	"net/http"
-	"os/exec"
+	"log"
 )
 
 // Struct for storing job description
 type Job struct {
-	ID 		  string
-	InputURL string
-	OutputCodec string
+	ID 		  string `json : "ID"`
+	InputURL string `json : "InputURL"`
+	OutputCodec string `json: "OutputCodec"`
 }
 
 // Struct for storing a job queue
@@ -37,39 +37,39 @@ func (q *JobQueue) IsEmpty() bool {
 }
 
 func submitHandler(w http.ResponseWriter, r *http.Request) {
-  // parse the request body
+  
+  // Parse the JSON from the request body
   var data Job
-  if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
-    http.Error(w, err.Error(), http.StatusBadRequest)
-    return
+
+  err := json.NewDecoder(r.Body).Decode(&data)
+  if err != nil {
+    fmt.Println("There was a problem trying to parse JSON data --Details: ", err)
   }
-  
-  // parse the JSON document
-  if err := json.Unmarshal([]byte(jsonStr), &job); err != nil {
-    panic("There was an error while trying to Unmarshal the JSON request --Details: ", err)
-  }
-  
+
+  //print the data recieved
+  fmt.Println(data.ID, data.InputURL, data.OutputCodec)
+
   // write a response
   w.WriteHeader(http.StatusOK)
-  w.Header().Set("Content-Type", "application/json")
-  json.NewEncoder(w).Encode(responseData)
 }
 
 func main() {
 
 	http.HandleFunc("/submit", submitHandler)
   
-  	http.ListenAndServe(":8080", nil)
-
-	// Set the input and output file paths
-	inputPath := "data/hasbulla.mp4"
-	outputPath := "data/output.mp4"
-
-	// Use the ffmpeg command to transcode the video
-	cmd := exec.Command("ffmpeg", "-i", inputPath, "-c:v", "h264", "-c:a", "aac", outputPath)
-
-	// Run the command and print any errors
-	if err := cmd.Run(); err != nil {
-		panic("An error occurred while trying to execute the command --Details: ", err)
-	}
+  	log.Printf("Listening for job requests on localhost:8080/submit...")
+  	err := http.ListenAndServe(":8080", nil)
+  	log.Fatal(err)
 }
+
+	// // Set the input and output file paths
+	// inputPath := "data/hasbulla.mp4"
+	// outputPath := "data/output.mp4"
+
+	// // Use the ffmpeg command to transcode the video
+	// cmd := exec.Command("ffmpeg", "-i", inputPath, "-c:v", "h264", "-c:a", "aac", outputPath)
+
+	// // Run the command and print any errors
+	// if err := cmd.Run(); err != nil {
+	// 	fmt.Println("An error occurred while trying to execute the command --Details: ", err)
+	// }
