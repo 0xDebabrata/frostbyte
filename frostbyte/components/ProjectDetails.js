@@ -1,7 +1,7 @@
 export default function ProjectDetails({ project }) {
   return (
     <div className="py-5 px-10 flex flex-col sm:flex-row items-start w-full bg-zinc-800 rounded">
-      <p className="w-[40%] text-zinc-200 text-sm pb-5 sm:pt-1">
+      <p className="w-[45%] text-zinc-200 text-sm pb-5 sm:pt-1">
         General settings
       </p>
       <div className="w-full">

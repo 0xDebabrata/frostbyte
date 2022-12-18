@@ -3,8 +3,9 @@ import { useSupabaseClient } from "@supabase/auth-helpers-react"
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs"
 
 import ProjectDetails from "../../components/ProjectDetails";
+import Tasks from "../../components/Tasks";
 
-export default function Project({ project, tasks }) {
+export default function Project({ project, tasks, buckets }) {
   const supabaseClient = useSupabaseClient()
   
   const [view, setView] = useState("details")
@@ -34,6 +35,7 @@ export default function Project({ project, tasks }) {
       <div className="bg-zinc-900 min-h-[calc(100vh-122px)] ">
         <div className="max-w-[800px] mx-auto px-10 pt-5">
           { view === "details" && (<ProjectDetails project={project} />)}
+          { view === "tasks" && (<Tasks tasks={tasks} buckets={buckets} />)}
         </div>
       </div>
     </div>
@@ -54,13 +56,16 @@ export const getServerSideProps = async (ctx) => {
   }
 
   const p1 = supabase.from("projects").select("id, name, api_key, supabase_url").eq("id", ctx.params.id)
-  const p2 = supabase.from("tasks").select("id, source_bucket, destination_bucket, spec").eq("project_id", ctx.params.id)
+  const p2 = supabase.from("tasks").select("id, name, source_bucket, destination_bucket, spec").eq("project_id", ctx.params.id)
+  const p3 = supabase.functions.invoke("get-buckets", {
+    body: { projectId: ctx.params.id }
+  })
 
-  const [project, tasks] = await Promise.all([p1, p2])
+  const [project, tasks, buckets] = await Promise.all([p1, p2, p3])
   
   return {
     props: {
-      project: project.data[0], tasks: tasks.data
+      project: project.data[0], tasks: tasks.data, buckets: JSON.parse(buckets.data).buckets
     }
   }
 }

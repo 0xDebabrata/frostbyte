@@ -16,19 +16,19 @@ serve(async (req) => {
   const { bucket_id, filename, task_id } = await req.json()
 
   // Fetch project details
-  const { data, error } = await supabaseClient
+  const p1 = await supabaseClient
     .from("projects")
     .select("id, name, supabase_url, supabase_secret, iv")
     .eq("api_key", apiKey)
 
-  if (error) {
-    console.error("Supabase query error: ", error)
-    return new Response(JSON.stringify({ error }), {
-      status: 500
-    })
-  }
+  const p2 = await supabaseClient
+    .from("tasks")
+    .select("source_bucket, destination_bucket, spec")
+    .eq("id", task_id)
 
-  if (!data.length) {
+  const [project, task] = await Promise.all([p1, p2])
+
+  if (!project.data.length || !task.data.length) {
     return new Response("Unauthorized.", {
       status: 401
     })
@@ -43,36 +43,42 @@ serve(async (req) => {
     ["encrypt", "decrypt"],
   );
 
-  const iv = hd(te(data[0].iv))
+  const iv = hd(te(project.data[0].iv))
 
   const decrypted = await crypto.subtle.decrypt(
     {name: "AES-CBC", iv},
     key,
-    hd(te(data[0].supabase_secret)),
+    hd(te(project.data[0].supabase_secret)),
   );
 
   const decryptedBytes = new Uint8Array(decrypted);
   const secretKey = td(decryptedBytes);
 
   // Get public URL for uploaded object
-  const client = createClient(data[0].supabase_url, secretKey)    // Supabase client with user's project admin privileges
+  const client = createClient(project.data[0].supabase_url, secretKey)    // Supabase client with user's project admin privileges
   const { data: signedUrl } = await client
     .storage
     .from(bucket_id)
     .createSignedUrl(filename, 86400)
 
-  console.log(signedUrl)
+  console.log({
+      supabase_url: project.data[0].supabase_url,
+      secretKey, 
+      signedUrl: signedUrl.signedUrl,
+      spec: task.data[0].spec,
+      source_bucket: task.data[0].source_bucket,
+      destination_bucket: task.data[0].destination_bucket
+  })
 
   return new Response(
     JSON.stringify({
-      secretKey, signedUrl
+      supabase_url: project.data[0].supabase_url,
+      secretKey, 
+      signedUrl: signedUrl.signedUrl,
+      spec: task.data[0].spec,
+      source_bucket: task.data[0].source_bucket,
+      destination_bucket: task.data[0].destination_bucket
     }),
     { headers: { "Content-Type": "application/json" } },
   )
 })
-
-
-
-// Deployment manual:
-// 1. Ensure pg_net extension is enabled
-// 2. Add postgres function and trigger
