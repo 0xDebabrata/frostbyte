@@ -1,13 +1,14 @@
 import { useState } from "react"
 import { useSupabaseClient } from "@supabase/auth-helpers-react"
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs"
-import { Space_Grotesk } from "@next/font/google"
+import { Inter, Space_Grotesk } from "@next/font/google"
 
 import ProjectDetails from "../../components/ProjectDetails";
 import Guide from "../../components/Guide";
 import Tasks from "../../components/Tasks";
 
 const space = Space_Grotesk({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"] })
 
 export default function Project({ project, tasks, buckets }) {
   const supabaseClient = useSupabaseClient()
@@ -20,7 +21,7 @@ export default function Project({ project, tasks, buckets }) {
   ]
 
   return (
-    <div className="bg-zinc-800">
+    <div className={`${inter.className} bg-zinc-800`}>
       <div className="max-w-[800px] mx-auto px-10 pt-4">
         <div className="flex justify-start items-end pb-4 px-2">
           <h2 className={`${space.className} text-3xl text-zinc-200 mr-10`}>

@@ -1,20 +1,25 @@
+import { Space_Grotesk, Inter } from "@next/font/google"
+
+const space = Space_Grotesk({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"] })
+
 const TaskCard = ({ task }) => {
   return (
-    <div className="bg-zinc-800 rounded shadow-lg px-8 py-3 mb-4">
+    <div className={`bg-zinc-800 rounded shadow-lg px-8 py-3 mb-4 ${inter.className}`}>
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-2xl text-zinc-200">{task.name}</h3>
+        <h3 className={`${space.className} text-2xl text-zinc-200`}>{task.name}</h3>
         <span className="text-zinc-400 text-sm">ID: {task.id}</span>
       </div>
       <div className="flex justify-between items-center flex-wrap">
-        <div className="w-32 text-ellipses text-zinc-300 font-light text-xs mb-2 flex flex-col">
+        <div className="w-32 text-ellipses text-zinc-400 font-light text-xs mb-2 flex flex-col">
           <p>
             Source
           </p>
-          <p className="text-sm text-zinc-200">
+          <p className={`text-sm text-zinc-200`}>
             {task.source_bucket}
           </p>
         </div>
-        <div className="w-32 text-ellipses text-zinc-300 font-light text-xs mb-2 flex flex-col">
+        <div className="w-32 text-ellipses text-zinc-400 font-light text-xs mb-2 flex flex-col">
           <p>
             Destination
           </p>
@@ -22,7 +27,7 @@ const TaskCard = ({ task }) => {
             {task.destination_bucket}
           </p>
         </div>
-        <div className="w-32 text-ellipses text-zinc-300 font-light text-xs mb-2 flex flex-col">
+        <div className="w-32 text-ellipses text-zinc-400 font-light text-xs mb-2 flex flex-col">
           <p>
             Operation
           </p>
@@ -30,7 +35,7 @@ const TaskCard = ({ task }) => {
             {task.spec.operation.charAt(0).toUpperCase() + task.spec.operation.slice(1)}
           </p>
         </div>
-        <div className="w-32 text-ellipses text-zinc-300 font-light text-xs mb-2 flex flex-col">
+        <div className="w-32 text-ellipses text-zinc-400 font-light text-xs mb-2 flex flex-col">
           <p>
             Output format
           </p>
