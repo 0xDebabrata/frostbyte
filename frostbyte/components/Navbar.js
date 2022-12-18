@@ -26,7 +26,7 @@ const Button = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
-    router.push("/")
+    router.reload("/")
   }
 
   if (session) {
