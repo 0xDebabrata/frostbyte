@@ -3,6 +3,7 @@ import { useSupabaseClient } from "@supabase/auth-helpers-react"
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs"
 
 import ProjectDetails from "../../components/ProjectDetails";
+import Guide from "../../components/Guide";
 import Tasks from "../../components/Tasks";
 
 export default function Project({ project, tasks, buckets }) {
@@ -34,7 +35,12 @@ export default function Project({ project, tasks, buckets }) {
 
       <div className="bg-zinc-900 min-h-[calc(100vh-122px)] ">
         <div className="max-w-[800px] mx-auto px-10 pt-5">
-          { view === "details" && (<ProjectDetails project={project} />)}
+          { view === "details" && (
+            <>
+              <ProjectDetails project={project} />
+              <Guide project={project} />
+            </>
+          )}
           { view === "tasks" && (<Tasks tasks={tasks} buckets={buckets} />)}
         </div>
       </div>

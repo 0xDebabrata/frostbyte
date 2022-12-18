@@ -1,13 +1,16 @@
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react"
 import Link from "next/link"
+import { Unbounded } from "@next/font/google"
 import { useRouter } from "next/router"
+
+const unbounded = Unbounded({ subsets: ["latin"] })
 
 export default function Navbar() {
 
   return (
     <div className="flex items-center justify-between bg-zinc-800 p-3">
       <Link href="/" className="cursor-default">
-        <h1 className="text-zinc-200 ml-4 text-xl">
+        <h1 className={`${unbounded.className} text-zinc-200 ml-4 text-xl`}>
           ❄️   Frostbyte
         </h1>
       </Link>

@@ -2,7 +2,7 @@ export default function ProjectDetails({ project }) {
   return (
     <div className="py-5 px-10 flex flex-col sm:flex-row items-start w-full bg-zinc-800 rounded">
       <p className="w-[45%] text-zinc-200 text-sm pb-5 sm:pt-1">
-        General settings
+        General information
       </p>
       <div className="w-full">
         <label className="text-zinc-400 font-light text-sm">Project ID</label>

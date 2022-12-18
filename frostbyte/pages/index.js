@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import { useUser, useSupabaseClient } from "@supabase/auth-helpers-react"
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs"
+import { Unbounded } from "@next/font/google"
+import Image from "next/image"
 
 import Card from "../components/ProjectCard.js";
 import Form from "../components/Forms.js";
+
+const unbounded = Unbounded({ subsets: ["latin"] })
 
 export default function Home({ projects: projectsSSR }) {
   const user = useUser()
@@ -23,11 +27,20 @@ export default function Home({ projects: projectsSSR }) {
 
   if (!user && !projects) {
     return (
-      <div>
-        <main>
-          <h1>Frostbyte</h1>
-        </main>
-      </div>
+      <main className="bg-zinc-800 flex flex-col justify-center items-center min-h-[calc(100vh-54px)]">
+        <h1 className={`${unbounded.className} text-6xl text-zinc-200 -translate-y-10`}>Frostbyte</h1>
+        <h3 className="text-xl text-zinc-300 font-light mt-4 -translate-y-10">
+          Crisp video transcoder and media processor for Supabase Storage.
+        </h3>
+          <div className="border border-green-300 rounded w-[55px] h-[52px] flex justify-center items-center hover:shadow-green-400 shadow-lg shadow-green-300 duration-150 -translate-y-5">
+        <Image
+          src="/supabase-logo-icon.svg"
+          alt="Supabase logo"
+          width={24}
+          height={24}
+        />
+        </div>
+      </main>
     );
   }
 
