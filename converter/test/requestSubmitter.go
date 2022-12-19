@@ -11,9 +11,15 @@ func main() {
   // create a RequestData instance
   jobData := 
   `{
-    "ID" : "123456",
-    "InputURL" : "https://xblahorigatqigmwvzbf.supabase.co/storage/v1/object/public/source/hasbulla.mp4?t=2022-12-14T13%3A24%3A30.795Z",
-    "OutputCodec" : "-c:v h264 -c:a aac"
+  "supabase_url": "https://xblahorigatqigmwvzbf.supabase.co",
+  "secretKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhibGFob3JpZ2F0cWlnbXd2emJmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY3MDY4MjQ5OCwiZXhwIjoxOTg2MjU4NDk4fQ.L-tLP0WeCIMDf9Z76-hi4FAbnqo4JZvo5NDph2byjSw",
+  "signedUrl": "https://xblahorigatqigmwvzbf.supabase.co/storage/v1/object/sign/source/we%20don't%20have%20the%20capacity.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJzb3VyY2Uvd2UgZG9uJ3QgaGF2ZSB0aGUgY2FwYWNpdHkubXA0IiwidHJhbnNmb3JtYXRpb25zIjoiIiwiaWF0IjoxNjcxNDAxNjM2LCJleHAiOjE5ODY3NjE2MzZ9.1OYdezZL6ncy0oJetoVCpa0qoUS9U2HwYgnBi8XjOL8",
+  "spec": {
+    "format": "mp4",
+    "operation": "transcode video"
+  },
+  "source_bucket": "destination",
+  "destination_bucket": "destination"
   }`
 
   // Encode the JSON string as a byte slice
