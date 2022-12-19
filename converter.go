@@ -10,6 +10,9 @@ import (
 	"io/ioutil"
 )
 
+// Get heroku port
+port := os.Getenv("PORT")
+
 // Create a global variable for the job queue
 var queue = &JobQueue{}
 
@@ -125,7 +128,7 @@ func main() {
 	http.HandleFunc("/submit", submitHandler)
 
 	log.Printf("Listening for job requests on localhost:8080/submit...")
-	err := http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(":" + port, nil)
 	log.Fatal(err)
 }
 
