@@ -66,7 +66,7 @@ func processJob(job Job) {
 
 	switch operation {
 	case "transcode video":
-		cmdStr = fmt.Sprintf("ffmpeg -i %s %s -headers $'Authorization: Bearer %s\\r\\napikey: %s %s/storage/v1/object/%s/%d.%s", 
+		cmdStr = fmt.Sprintf("ffmpeg -i %s %s -headers $'Authorization: Bearer %s\\r\\napikey: %s\\r\\n' %s/storage/v1/object/%s/%d.%s", 
 							job.SignedURL, 
 							flags[job.Spec.Format], 
 							job.SecretKey, 

@@ -1,4 +1,4 @@
-package test
+package main
 
 import (
 	"fmt"
@@ -26,7 +26,7 @@ func main() {
   jsonData := []byte(jobData)
 
   // Create a POST request with the JSON data
-  req, err := http.NewRequest("POST", "http://localhost:8080/submit", bytes.NewBuffer(jsonData))
+  req, err := http.NewRequest("POST", "https://frostbyte.herokuapp.com/submit", bytes.NewBuffer(jsonData))
   if err != nil {
     fmt.Println("There was an error while trying to create POST request --Details: ", err)
   }
