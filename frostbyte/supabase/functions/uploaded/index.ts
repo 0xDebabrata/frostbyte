@@ -66,6 +66,7 @@ serve(async (req) => {
   fetch(`${server}/submit`, {
     method: "POST",
     body: JSON.stringify({
+      filename,
       supabase_url: project.data[0].supabase_url,
       secretKey, 
       signedUrl: signedUrl.signedUrl,
