@@ -61,24 +61,22 @@ serve(async (req) => {
     .from(bucket_id)
     .createSignedUrl(filename, 86400)
 
-  console.log({
+  const server = Deno.env.get("SERVER_URL")
+
+  fetch(`${server}/submit`, {
+    method: "POST",
+    body: JSON.stringify({
       supabase_url: project.data[0].supabase_url,
       secretKey, 
       signedUrl: signedUrl.signedUrl,
       spec: task.data[0].spec,
       source_bucket: task.data[0].source_bucket,
       destination_bucket: task.data[0].destination_bucket
+    })
   })
 
   return new Response(
-    JSON.stringify({
-      supabase_url: project.data[0].supabase_url,
-      secretKey, 
-      signedUrl: signedUrl.signedUrl,
-      spec: task.data[0].spec,
-      source_bucket: task.data[0].source_bucket,
-      destination_bucket: task.data[0].destination_bucket
-    }),
+    "Success",
     { headers: { "Content-Type": "application/json" } },
   )
 })
