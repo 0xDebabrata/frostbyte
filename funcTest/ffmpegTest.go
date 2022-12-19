@@ -1,4 +1,4 @@
-package funcTest
+package main
 
 import (
 	"os/exec"
