@@ -2,7 +2,7 @@ import { useEffect } from "react"
 
 import Dropdown from "./Dropdown"
 
-const codecs = ["MP4", "WebM", "Ogg"]
+const codecs = ["mp4", "webm", "ogg"]
 
 export default function VideoSpec({ spec, setSpec }) {
   useEffect(() => {
