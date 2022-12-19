@@ -7,11 +7,9 @@ import (
 	"net/http"
 	"time"
 	"os/exec"
+	"os"
 	"io/ioutil"
 )
-
-// Get heroku port
-port := os.Getenv("PORT")
 
 // Create a global variable for the job queue
 var queue = &JobQueue{}
@@ -124,6 +122,9 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+
+	// Get heroku port
+	port := os.Getenv("PORT")
 
 	http.HandleFunc("/submit", submitHandler)
 
