@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -18,6 +19,21 @@ func getEnv(key string) string {
 
 
 func main() {
-    projectDetails := getUserProjectDetails(3)
-    log.Println(projectDetails)
+    tempDirectory := "tmp"
+    createDirectory(tempDirectory)
+
+    projectDetails := getUserProjectDetails(11)
+    localFilePath := fmt.Sprintf("%s/%s", tempDirectory, "IMG_20240224_155354.jpg")
+    downloadInputFile(
+        "test",
+        "IMG_20240224_155354.jpg",
+        localFilePath,
+        projectDetails,
+    )
+    uploadOutputFile(
+        "test",
+        "uploaded.jpg",
+        localFilePath,
+        projectDetails,
+    )
 }
