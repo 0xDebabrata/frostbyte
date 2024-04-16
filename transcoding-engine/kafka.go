@@ -1,10 +1,16 @@
 package main
 
-type job struct {
+type Job struct {
     id              string
-    user_id         string
-    project_id      string
-    bucket_id       string
-    received_at     int
-    processed_at    int
+    userId          string
+
+    projectId       string
+    inputBucketId   string
+    outputBucketId  string
+    videoCodec      string
+    resolution      string
+    bitrate         string
+
+    receivedAt      int
+    processedAt     int
 }

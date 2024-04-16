@@ -22,18 +22,29 @@ func main() {
     tempDirectory := "tmp"
     createDirectory(tempDirectory)
 
-    projectDetails := getUserProjectDetails(11)
-    localFilePath := fmt.Sprintf("%s/%s", tempDirectory, "IMG_20240224_155354.jpg")
-    downloadInputFile(
-        "test",
-        "IMG_20240224_155354.jpg",
-        localFilePath,
-        projectDetails,
-    )
-    uploadOutputFile(
-        "test",
-        "uploaded.jpg",
-        localFilePath,
-        projectDetails,
-    )
+    for {
+        // Fetch project details
+        projectDetails := getUserProjectDetails(11)
+        log.Println(projectDetails.SupabaseUrl)
+
+        localFilePath := fmt.Sprintf("%s/%s", tempDirectory, "IMG_20240224_155354.jpg")
+
+        // Download input file
+        downloadInputFile(
+            "test",
+            "IMG_20240224_155354.jpg",
+            localFilePath,
+            projectDetails,
+        )
+
+        // Conversion process
+
+        // Upload converted file
+        uploadOutputFile(
+            "test",
+            "uploaded.jpg",
+            localFilePath,
+            projectDetails,
+        )
+    }
 }
