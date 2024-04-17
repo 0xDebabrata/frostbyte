@@ -1,22 +1,18 @@
-import {useState } from 'react'
+import {Dispatch, SetStateAction, useState } from 'react'
 import { Combobox } from '@headlessui/react'
 
-interface Options {
-    optionName: string;
-  }
 interface DropdownProps {
-    choice: string[]; 
-    onSelect: (selectedOption: Options)=> void
-  }  
+  choice: string[]; 
+  selectedOption: string;
+  setSelectedOption: Dispatch<SetStateAction<string>>;
+}  
 
-function Dropdown({choice, onSelect}: DropdownProps) {
-  const [selectedOption, setSelectedOption] = useState(choice[0] || '')
+function Dropdown({
+  choice,
+  selectedOption,
+  setSelectedOption
+}: DropdownProps) {
   const [query, setQuery] = useState('')
-
-  const handleSelect = (option: Options) => {
-    setSelectedOption(option.optionName);
-    onSelect(option); 
-  };
 
   const filteredChoice =
     query === ''
@@ -27,7 +23,10 @@ function Dropdown({choice, onSelect}: DropdownProps) {
 
   return (
     <Combobox value={selectedOption} onChange={setSelectedOption}>
-      <Combobox.Input onChange={(event) => setQuery(event.target.value)} />
+      <Combobox.Input
+        onChange={(event) => setQuery(event.target.value)}
+        className="text-black"
+      />
       <Combobox.Options>
         {filteredChoice.map((option:string) => (
           <Combobox.Option key={option} value={option}>
