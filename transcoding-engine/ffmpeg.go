@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"time"
+    "bytes"
+    "os/exec"
 
 	"gopkg.in/vansante/go-ffprobe.v2"
 )
@@ -20,6 +22,28 @@ var videoResolutions = map[string]int{
     "1080p": 1080,
     "720p": 720,
     "480p": 480,
+}
+
+func buildffmpegCommand(
+    inputFileName string,
+    outputFileName string,
+    job *Job,
+    ffprobeOutput *ffprobe.ProbeData,
+) *exec.Cmd {
+    videoCodecArg, audioCodecArg := getTranscodingVideoAudioCodecs(inputFileName, job, ffprobeOutput)
+
+    cmd := exec.Command(
+        "ffmpeg",
+        "-i", inputFileName,
+
+        "-vf", generateScaleFilter(job, ffprobeOutput),
+        "-c:v", videoCodecArg,
+        "-crf", setVideoQuality(job),
+        "-c:a", audioCodecArg,
+        outputFileName,
+    )
+
+    return cmd
 }
 
 func generateScaleFilter(
@@ -79,6 +103,44 @@ func processVideo(
     job *Job,
     ffprobeOutput *ffprobe.ProbeData,
 ) {
-    videoCodecArg, audioCodecArg := getTranscodingVideoAudioCodecs(inputFileName, job, ffprobeOutput)
-    log.Println(videoCodecArg, audioCodecArg)
+    cmd := buildffmpegCommand(
+        inputFileName,
+        outputFileName,
+        job,
+        ffprobeOutput,
+    )
+    var out bytes.Buffer
+    var stderr bytes.Buffer
+    cmd.Stdout = &out
+    cmd.Stderr = &stderr
+
+    err := cmd.Run()
+    if err != nil {
+        fmt.Println(fmt.Sprint(err))
+        fmt.Println(stderr.String())
+        fmt.Println(out.String())
+        return
+    }
+    fmt.Println(stderr.String())
+
+    if err != nil {
+        log.Panicf("Error transcoding video file: %v", err)
+    }
+}
+
+func setVideoQuality(
+    job *Job,
+) string {
+    switch job.quality {
+    case "lossless":
+        return "0"
+    case "high":
+        return "12"
+    case "medium":
+        return "18"
+    case "low":
+        return "24"
+    default:
+        return "23"
+    }
 }

@@ -9,7 +9,7 @@ type Job struct {
     outputBucketId  string
     videoCodec      string
     resolution      string
-    bitrate         string
+    quality         string
 
     receivedAt      int
     processedAt     int
