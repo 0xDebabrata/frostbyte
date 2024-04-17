@@ -38,6 +38,7 @@ func main() {
         )
 
         // Conversion process
+        inputVideoData := probeInputVideoData(localFilePath)
 
         // Upload converted file
         uploadOutputFile(
