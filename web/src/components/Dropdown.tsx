@@ -1,33 +1,37 @@
-'use client'
-import {Fragment,useState } from 'react'
+import {useState } from 'react'
 import { Combobox } from '@headlessui/react'
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
-interface Person {
-    id: number;
-    name: string;
+
+interface Options {
+    optionName: string;
   }
 interface DropdownProps {
-    people: string[]; 
+    choice: string[]; 
+    onSelect: (selectedOption: Options)=> void
   }  
 
-function Dropdown({people}: DropdownProps) {
-  const [selectedPerson, setSelectedPerson] = useState(people[0] || '')
+function Dropdown({choice, onSelect}: DropdownProps) {
+  const [selectedOption, setSelectedOption] = useState(choice[0] || '')
   const [query, setQuery] = useState('')
 
-  const filteredPeople =
+  const handleSelect = (option: Options) => {
+    setSelectedOption(option.optionName);
+    onSelect(option); 
+  };
+
+  const filteredChoice =
     query === ''
-      ? people
-      : people.filter((person: string) => {
-          return person.toLowerCase().includes(query.toLowerCase())
+      ? choice
+      : choice.filter((option: string) => {
+          return option.toLowerCase().includes(query.toLowerCase())
         })
 
   return (
-    <Combobox value={selectedPerson} onChange={setSelectedPerson}>
+    <Combobox value={selectedOption} onChange={setSelectedOption}>
       <Combobox.Input onChange={(event) => setQuery(event.target.value)} />
       <Combobox.Options>
-        {filteredPeople.map((person :string) => (
-          <Combobox.Option key={person} value={person}>
-            {person}
+        {filteredChoice.map((option:string) => (
+          <Combobox.Option key={option} value={option}>
+            {option}
           </Combobox.Option>
         ))}
       </Combobox.Options>
