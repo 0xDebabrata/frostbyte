@@ -32,32 +32,34 @@ func buildffmpegCommand(
 ) *exec.Cmd {
     videoCodecArg, audioCodecArg := getTranscodingVideoAudioCodecs(inputFileName, job, ffprobeOutput)
 
-    cmd := exec.Command(
-        "ffmpeg",
-        "-i", inputFileName,
+    if job.Resolution == "original" {
+        return exec.Command(
+            "ffmpeg",
+            "-i", inputFileName,
 
-        "-vf", generateScaleFilter(job, ffprobeOutput),
-        "-c:v", videoCodecArg,
-        "-crf", setVideoQuality(job),
-        "-c:a", audioCodecArg,
-        outputFileName,
-    )
+            "-c:v", videoCodecArg,
+            "-crf", setVideoQuality(job),
+            "-c:a", audioCodecArg,
+            outputFileName,
+        )
+    } else {
+        return exec.Command(
+            "ffmpeg",
+            "-i", inputFileName,
 
-    return cmd
+            "-vf", generateScaleFilter(job),
+            "-c:v", videoCodecArg,
+            "-crf", setVideoQuality(job),
+            "-c:a", audioCodecArg,
+            outputFileName,
+        )
+    }
 }
 
 func generateScaleFilter(
     job *Job,
-    ffprobeOutput *ffprobe.ProbeData,
 ) string {
-    inputVideoStream := ffprobeOutput.FirstVideoStream()
-    inputVideoWidth := inputVideoStream.Width
-    inputVideoHeight := inputVideoStream.Height
-    if job.resolution == "original" {
-        return fmt.Sprintf("scale=%d:%d", inputVideoWidth, inputVideoHeight);
-    }
-
-    return fmt.Sprintf("scale=-2:%d", videoResolutions[job.resolution])
+    return fmt.Sprintf("scale=-2:%d", videoResolutions[job.Resolution])
 }
 
 func getTranscodingVideoAudioCodecs(
@@ -72,8 +74,8 @@ func getTranscodingVideoAudioCodecs(
     // Copy codec if file already has supported codecs. Prevents unnecessary
     // transcoding
     outputVideoCodec := "copy"
-    if job.videoCodec != "original" && job.videoCodec != inputVideoCodec {
-        outputVideoCodec = videoCodecMap[job.videoCodec]
+    if job.VideoCodec != "original" && job.VideoCodec != inputVideoCodec {
+        outputVideoCodec = videoCodecMap[job.VideoCodec]
     }
     outputAudioCodec := "aac"
     if inputAudioCodec == outputAudioCodec {
@@ -131,7 +133,7 @@ func processVideo(
 func setVideoQuality(
     job *Job,
 ) string {
-    switch job.quality {
+    switch job.Quality {
     case "lossless":
         return "0"
     case "high":
