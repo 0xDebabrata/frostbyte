@@ -8,8 +8,9 @@ export default function Login() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "github",
     });
-
-    console.log(data);
+    if (error) {
+      console.log(error);
+    }
   }
 
   return (
