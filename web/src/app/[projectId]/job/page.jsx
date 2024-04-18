@@ -25,34 +25,32 @@ export default function Job({ params }) {
   const [outputBucket, setOutputBucket] = useState("");
 
   const outputFormatChoices = [
-    "Durward Reynolds",
-    "Debarghya Mondal",
-    "Therese Wunsch",
-    "Benedict Kessler",
-    "Katelyn Rohan",
+    "Original",
+    "H.264",
+    "H.265",
+    "VP9",
   ];
-  const [outputFormat, setOutputFormat] = useState("");
+  const [outputFormat, setOutputFormat] = useState(outputFormatChoices[0]);
 
   const outputResolutionChoices = [
-    "Durward Reynolds",
-    "Debarghya Mondal",
-    "Therese Wunsch",
-    "Benedict Kessler",
-    "Katelyn Rohan",
+    "Original",
+    "4k",
+    "1080p",
+    "720p",
+    "360p",
   ];
-  const [outputResolution, setOutputResolution] = useState("");
+  const [outputResolution, setOutputResolution] = useState(outputResolutionChoices[0]);
 
   const outputQualityChoices = [
-    "Durward Reynolds",
-    "Debarghya Mondal",
-    "Therese Wunsch",
-    "Benedict Kessler",
-    "Katelyn Rohan",
+    "Best",
+    "High",
+    "Medium",
+    "Low",
   ];
-  const [outputQuality, setOutputQuality] = useState("");
+  const [outputQuality, setOutputQuality] = useState(outputQualityChoices[0]);
 
   return (
-    <form>
+    <form className="bg-neutral-800">
       <div className="space-y-12">
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">
@@ -73,9 +71,6 @@ export default function Job({ params }) {
               </label>
               <div className="mt-2">
                 <div className="flex sm:max-w-md">
-                  <span className="flex select-none items-center pr-2 text-gray-500 sm:text-sm">
-                    {projectId}.supabase.co/storage/v1/object/public/
-                  </span>
                   <Dropdown
                     choice={inputBucketChoices}
                     selectedOption={inputBucket}
@@ -95,9 +90,6 @@ export default function Job({ params }) {
               </label>
               <div className="mt-2">
                 <div className="flex sm:max-w-md">
-                  <span className="flex select-none items-center pr-2 text-gray-500 sm:text-sm">
-                    {projectId}.supabase.co/storage/v1/object/public/
-                  </span>
                   <Dropdown
                     choice={outputBucketChoices}
                     selectedOption={outputBucket}
