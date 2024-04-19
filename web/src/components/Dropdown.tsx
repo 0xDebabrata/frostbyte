@@ -15,7 +15,7 @@ function Dropdown({
 }: DropdownProps) {
   const [query, setQuery] = useState("");
 
-  function classNames(...classes) {
+  function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
   }
 
