@@ -92,7 +92,7 @@ func uploadOutputFile(
 
     result, err := storageClient.UploadFile(bucketId, filepath, fileData)
     if err != nil {
-        log.Fatalf("Error downloading file: %v", err)
+        log.Fatalf("Error uploading file: %v", err)
     }
     log.Println(result)
 }
