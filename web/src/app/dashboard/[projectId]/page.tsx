@@ -2,14 +2,17 @@
 
 import { useState } from "react"
 
+import Jobs from "@/components/dashboard/Jobs"
+
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function ProjectPage() {
   const [navigation, setNavigation] = useState([
-    { name: 'General', href: '#', current: true },
-    { name: 'Jobs', href: '#', current: false },
+    { name: 'General', current: true },
+    { name: 'Jobs', current: false, component: <Jobs /> },
+    { name: 'Logs', current: false },
   ])
 
   const updateNavigation = (idx: number) => {
@@ -38,20 +41,19 @@ export default function ProjectPage() {
               <div className="hidden md:block">
                 <div className="flex items-baseline space-x-4">
                   {navigation.map((item, idx) => (
-                    <a
+                    <p
                       key={item.name}
-                      href={item.href}
                       className={classNames(
                         item.current
                           ? 'bg-neutral-700 text-neutral-100'
                           : 'text-white hover:bg-neutral-700 hover:bg-opacity-75',
-                        'rounded-md px-3 py-2 text-sm duration-150'
+                        'rounded-md px-3 py-2 text-sm duration-150 cursor-pointer'
                       )}
                       aria-current={item.current ? 'page' : undefined}
                       onClick={() => updateNavigation(idx)}
                     >
                       {item.name}
-                    </a>
+                    </p>
                   ))}
                 </div>
               </div>
@@ -61,7 +63,9 @@ export default function ProjectPage() {
       </nav>
 
       <main>
-        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">{/* Your content */}</div>
+        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+          {navigation.filter(item => item.current)[0].component}
+        </div>
       </main>
     </div>
   )
