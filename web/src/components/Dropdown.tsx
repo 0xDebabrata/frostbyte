@@ -58,7 +58,7 @@ function Dropdown({
                     <span
                       className={classNames(
                         "block truncate",
-                        selected && "font-semibold"
+                        selected ? "font-semibold" : ""
                       )}
                     >
                       {option}
