@@ -1,9 +1,12 @@
 'use client'
 
 import { useEffect, useState } from "react"
+
 import { Database } from "@/utils/supabase"
+import CreateProjectModal from "@/components/Modal/CreateProjectModal"
 
 export default function Dashboard() {
+  const [open, setOpen] = useState(false)
   const [projects, setProjects] = useState<Database["public"]["Tables"]["supabase_projects"]["Row"][]>([])
 
   const fetchProjects = async () => {
@@ -23,7 +26,7 @@ export default function Dashboard() {
         connected_at: currDate.toLocaleDateString(),
         supabase_url: "",
         supabase_secret_key: "",
-        name: "frostbyte",
+        name: "just ice",
         key_id: "",
         user_id: "",
       }
@@ -40,6 +43,7 @@ export default function Dashboard() {
         Projects
       </h1>
       <button
+        onClick={() => setOpen(true)}
         className="mt-5 rounded py-1 px-3 bg-teal-700 border border-teal-500 text-white text-xs"
       >
         New project
@@ -55,6 +59,7 @@ export default function Dashboard() {
           </div>
         ))}
       </div>
+      <CreateProjectModal open={open} setOpen={setOpen} />
     </div>
   )
 }
