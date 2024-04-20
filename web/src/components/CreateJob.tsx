@@ -143,7 +143,7 @@ export default function CreateJobForm({
                         <div>
                           <div className="border-b border-gray-900/10 pb-12">
                             <p className="mt-1 text-sm leading-6 text-neutral-400">
-                              Use this form to select job parameters for this project
+                              Configure transcoding parameters for videos uploaded to your input bucket.
                             </p>
 
                             <div className="mt-4">
