@@ -78,6 +78,9 @@ export default function GeneralProjectDashboard() {
           </div>
         </div>
       </div>
+      <h2 className="mt-6 text-neutral-100 text-xl">
+        Instructions
+      </h2>
     </div>
   )
 }

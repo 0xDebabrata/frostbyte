@@ -6,30 +6,38 @@ import {
   BoltIcon,
   SparklesIcon,
 } from "@heroicons/react/24/outline";
-import { createClient } from "../utils/supabase/client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { User } from "@supabase/supabase-js";
 
-export default async function Home() {
+import { createClient } from "../utils/supabase/client";
+
+export default function Home() {
   const supabase = createClient();
   const router = useRouter();
 
+  const [user, setUser] = useState<User | null>(null)
+
   async function signInWithGithub() {
-    console.log("click");
-    const { data, error } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: "github",
+      options: {
+        redirectTo: (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000") + "/dashboard"
+      }
     });
+    if (error) {
+      console.error(error)
+    }
+  }
+
+  function redirectToDashboard() {
+    router.push("/dashboard")
   }
 
   useEffect(() => {
     const initialiseUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (!error) {
-        console.log("data", data);
-        if (data) {
-          router.push("/dashboard");
-        }
-      }
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user)
     };
 
     initialiseUser();
@@ -86,15 +94,15 @@ export default async function Home() {
           frostbyte <span className="text-4xl lg:text-7xl">&nbsp;❄️</span>
         </h1>
         <button
-          onClick={signInWithGithub}
-          className="w-64 bg-indigo-400 p-2 hover:bg-indigo-600"
+          onClick={!user ? signInWithGithub : redirectToDashboard}
+          className="mt-10 rounded w-64 bg-neutral-300 border border-white p-2 hover:bg-neutral-100 duration-150 text-neutral-900 cursor-pointer"
         >
-          Sign in with Github
+          {!user ? "Sign in with Github" : "Go to dashboard"}
         </button>
       </div>
 
       {/* Features */}
-      <div className="divide-y divide-neutral-600 overflow-hidden rounded-lg shadow sm:grid sm:grid-cols-2 sm:gap-px sm:divide-y-0">
+      <div className="my-10 divide-y divide-neutral-600 overflow-hidden rounded-lg shadow sm:grid sm:grid-cols-2 sm:gap-px sm:divide-y-0">
         {actions.map((action, actionIdx) => (
           <div
             key={action.title}
