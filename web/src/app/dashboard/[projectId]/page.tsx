@@ -112,7 +112,9 @@ export default function ProjectPage({ params }: ProjectPageParams) {
             />
           )}
           {navigation.filter(item => item.current)[0].name === "Jobs" && (
-            <Jobs />
+            <Jobs
+              projectId={projectId}
+            />
           )}
         </div>
       </main>

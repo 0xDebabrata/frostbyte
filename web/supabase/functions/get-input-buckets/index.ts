@@ -37,6 +37,7 @@ Deno.serve(async (req) => {
     .from('decrypted_supabase_projects')
     .select('supabase_url, decrypted_supabase_secret_key')
     .eq("id", parseInt(projectId))
+    .eq("user_id", user.id)
 
   if (sqlError) {
     console.error(sqlError)
