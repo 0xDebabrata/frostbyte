@@ -24,7 +24,8 @@ type Job struct {
     ProcessedAt     int
 }
 
-var kafkaAddress = "localhost:9092"
+//var kafkaAddress = "localhost:9092"
+var kafkaAddress = "frostbyte-kafka-service.onrender.com"
 var topicNameMap = map[string] string{
     "jobs": "jobs",
 }

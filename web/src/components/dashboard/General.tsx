@@ -5,54 +5,27 @@ import {
   EyeIcon,
   EyeSlashIcon
 } from '@heroicons/react/24/outline'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import toast from 'react-hot-toast'
 
-import { createClient } from '@/utils/supabase/client'
 import Loader from '../Loader'
+import { Project } from '@/utils/types'
 
 interface GeneralProjectDashboardProps {
-  projectId: number;
+  project: Project | null;
+  loading: boolean;
 }
 
 export default function GeneralProjectDashboard({
-  projectId,
+  project,
+  loading,
 }: GeneralProjectDashboardProps) {
-  const supabase = createClient()
-  const [project, setProject] = useState<Project|null>(null)
-  const [loading, setLoading] = useState(true)
-
   const [apiKeyHidden, setApiKeyHidden] = useState(true)
-
-  const fetchProjectDetails = async () => {
-    const { data } = await supabase
-      .from("supabase_projects")
-      .select("id, name, supabase_url")
-      .eq("id", projectId)
-    if (data && data.length) {
-      const apiKey = await fetchApiKey()
-      setProject({
-        ...data[0],
-        decrypted_api_key: apiKey,
-      })
-      setLoading(false)
-    }
-  }
-  const fetchApiKey = async () => {
-    const resp = await fetch(`/api/project/apiKey?projectId=${projectId}`)
-    const { apiKey } = await resp.json()
-    return apiKey as string
-  }
 
   const copyApiKey = () => {
     navigator.clipboard.writeText(project?.decrypted_api_key || "");
     toast.success("API Key copied to clipboard")
   }
-
-  useEffect(() => {
-    fetchProjectDetails()
-    fetchApiKey()
-  }, [])
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -106,7 +79,7 @@ export default function GeneralProjectDashboard({
                   id="url"
                   disabled
                   className="block bg-neutral-700 w-full rounded-md border-0 py-1.5 text-neutral-400 shadow-sm ring-1 ring-neutral-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-neutral-600 disabled:cursor-not-allowed disabled:ring-neutral-600 sm:text-sm sm:leading-6"
-                  value={project.supabase_url}
+                  value={project?.supabase_url}
                 />
               </div>
             </div>
