@@ -5,20 +5,15 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 /// <reference types="https://esm.sh/@supabase/functions-js/src/edge-runtime.d.ts" />
 
-import {Kafkasaur} from "https://deno.land/x/kafkasaur/index.ts"
+import { Kafkasaur } from "https://deno.land/x/kafkasaur/index.ts"
 import { createClient } from "@supabase/supabase-js";
-import { corsHeaders } from "../_shared/cors.ts"
 
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
-  }
+  const apiKey = req.headers.get('x-frostbyte-api-key')!
 
-  const authHeader = req.headers.get('Authorization')!
   const supabaseClient = createClient(
     Deno.env.get('SUPABASE_URL') ?? '',
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-    { global: { headers: { Authorization: authHeader } } }
   )
 
   const { data: { user } } = await supabaseClient.auth.getUser()
@@ -27,7 +22,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({ error: "Not authenticated" }),
       {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         status: 403
       },
     )
@@ -49,7 +44,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({ error: sqlError }),
       {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         status: 500,
       },
     )
@@ -71,7 +66,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({ message:'Event pushed to Kafka successfully' }),
       {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         status: 200,
       },
     )
@@ -81,7 +76,7 @@ catch(error){
   return new Response(
     JSON.stringify({ error: sqlError }),
     {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" },
       status: 500,
     },
   )
