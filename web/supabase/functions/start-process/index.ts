@@ -5,56 +5,88 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 /// <reference types="https://esm.sh/@supabase/functions-js/src/edge-runtime.d.ts" />
 
-import { Kafka } from "https://deno.land/x/kafkajs/mod.ts";
+import {Kafkasaur} from "https://deno.land/x/kafkasaur/index.ts"
 import { createClient } from "@supabase/supabase-js";
+import { corsHeaders } from "../_shared/cors.ts"
 
-const supabaseUrl = "YOUR_SUPABASE_URL";
-const supabaseAnonKey = "YOUR_SUPABASE_ANON_KEY";
-const kafkaBrokers = ["your-kafka-broker:9092"];
-const kafkaTopic = "your-kafka-topic";
+Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+  const authHeader = req.headers.get('Authorization')!
+  const supabaseClient = createClient(
+    Deno.env.get('SUPABASE_URL') ?? '',
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+    { global: { headers: { Authorization: authHeader } } }
+  )
 
-const kafka = new Kafka({ brokers: kafkaBrokers });
-const producer = kafka.producer();
+  const { data: { user } } = await supabaseClient.auth.getUser()
+  if (!user) {
+    // User not authenticated
+    return new Response(
+      JSON.stringify({ error: "Not authenticated" }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 403
+      },
+    )
+  }
 
-export const handler = async (req) => {
+  const { job_id } = await req.json()
+
+  console.log("User", user)
+  console.log("Project ID", job_id)
+
+  const { data: job, error: sqlError } = await supabaseClient
+    .from('jobs')
+    .select('*')
+    .eq("job_id", parseInt(job_id))
+    .single()
+
+  if (sqlError || !job) {
+    console.error(sqlError)
+    return new Response(
+      JSON.stringify({ error: sqlError }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      },
+    )
+  }
+
+  const kafka = new Kafkasaur({
+    clientId: 'example-producer',
+    brokers: ['localhost:9092']
+  })
+   
+  const producer = kafka.producer();
+
   try {
-    // Extract projectId from request body
-    const { projectId } = await req.json();
-
-    // Fetch corresponding job from jobs table in Supabase
-    const { data: job, error: supabaseError } = await supabase
-      .from('jobs')
-      .select('*')
-      .eq('project_id', projectId)
-      .single();
-
-    if (supabaseError || !job) {
-      throw new Error('Job not found');
-    }
-
-    // Produce Kafka event
     await producer.send({
-      topic: kafkaTopic,
+      topic: kafka,
       messages: [{ value: JSON.stringify(job) }],
     });
 
-    // Close Kafka producer
-    await producer.disconnect();
-
     return new Response(
-      JSON.stringify({ message: 'Event produced successfully' }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
-    );
-  } catch (error) {
-    console.error('Error:', error);
-    return new Response(
-      JSON.stringify({ message: 'Error producing event' }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
-  }
-};
+      JSON.stringify({ message:'Event pushed to Kafka successfully' }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      },
+    )
+}
+catch(error){
+  console.error('Error pushing event to Kafka:', error);
+  return new Response(
+    JSON.stringify({ error: sqlError }),
+    {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500,
+    },
+  )
+}
+})
 
 
 
