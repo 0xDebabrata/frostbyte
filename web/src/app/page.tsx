@@ -46,7 +46,6 @@ export default function Home() {
   const actions = [
     {
       title: "Supabase integration",
-      href: "#",
       icon: BoltIcon,
       iconForeground: "text-teal-700",
       iconBackground: "bg-teal-100",
@@ -54,7 +53,6 @@ export default function Home() {
     },
     {
       title: "Automations",
-      href: "#",
       icon: ArrowPathIcon,
       iconForeground: "text-purple-700",
       iconBackground: "bg-purple-100",
@@ -62,7 +60,6 @@ export default function Home() {
     },
     {
       title: "High quality outputs",
-      href: "#",
       icon: SparklesIcon,
       iconForeground: "text-sky-700",
       iconBackground: "bg-sky-100",
@@ -71,7 +68,6 @@ export default function Home() {
     },
     {
       title: "Simple configuration",
-      href: "#",
       icon: BeakerIcon,
       iconForeground: "text-yellow-700",
       iconBackground: "bg-yellow-100",
@@ -115,7 +111,7 @@ export default function Home() {
               actionIdx === actions.length - 1
                 ? "rounded-bl-lg rounded-br-lg sm:rounded-bl-none"
                 : "",
-              "group relative bg-white/10 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500"
+              "group transition relative bg-white/10 hover:bg-white/20 p-6 focus-within:ring-2 focus-within:ring-inset duration-250"
             )}
           >
             <div>
@@ -131,11 +127,11 @@ export default function Home() {
             </div>
             <div className="mt-8">
               <h3 className="text-base font-semibold leading-6 text-neutral-200">
-                <a href={action.href} className="focus:outline-none">
+                <p className="focus:outline-none">
                   {/* Extend touch target to entire panel */}
                   <span className="absolute inset-0" aria-hidden="true" />
                   {action.title}
-                </a>
+                </p>
               </h3>
               <p className="mt-2 text-sm text-neutral-400">
                 {action.description}

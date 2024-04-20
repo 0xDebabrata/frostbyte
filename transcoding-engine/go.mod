@@ -10,5 +10,9 @@ require (
 	github.com/supabase-community/storage-go v0.7.0 // indirect
 	github.com/supabase-community/supabase-go v0.0.1 // indirect
 	github.com/supabase/postgrest-go v0.0.7 // indirect
+	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
+	github.com/xdg-go/scram v1.1.2 // indirect
+	github.com/xdg-go/stringprep v1.0.4 // indirect
+	golang.org/x/text v0.13.0 // indirect
 	gopkg.in/vansante/go-ffprobe.v2 v2.1.1 // indirect
 )
