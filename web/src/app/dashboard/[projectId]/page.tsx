@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 
+import GeneralProjectDashboard from "@/components/dashboard/General"
 import Jobs from "@/components/dashboard/Jobs"
 
 function classNames(...classes: string[]) {
@@ -10,7 +11,7 @@ function classNames(...classes: string[]) {
 
 export default function ProjectPage() {
   const [navigation, setNavigation] = useState([
-    { name: 'General', current: true },
+    { name: 'General', current: true, component: <GeneralProjectDashboard /> },
     { name: 'Jobs', current: false, component: <Jobs /> },
     { name: 'Logs', current: false },
   ])
