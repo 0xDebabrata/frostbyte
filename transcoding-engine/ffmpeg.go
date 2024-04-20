@@ -38,7 +38,17 @@ func buildffmpegCommand(
             "-i", inputFileName,
 
             "-c:v", videoCodecArg,
-            "-crf", setVideoQuality(job),
+            "-crf", setVideoQuality(job, videoCodecArg),
+            "-c:a", audioCodecArg,
+            outputFileName,
+        )
+    } else if videoCodecArg == "SKIP" {
+        return exec.Command(
+            "ffmpeg",
+            "-i", inputFileName,
+
+            "-vf", generateScaleFilter(job),
+            "-crf", setVideoQuality(job, videoCodecArg),
             "-c:a", audioCodecArg,
             outputFileName,
         )
@@ -49,7 +59,7 @@ func buildffmpegCommand(
 
             "-vf", generateScaleFilter(job),
             "-c:v", videoCodecArg,
-            "-crf", setVideoQuality(job),
+            "-crf", setVideoQuality(job, videoCodecArg),
             "-c:a", audioCodecArg,
             outputFileName,
         )
@@ -80,6 +90,12 @@ func getTranscodingVideoAudioCodecs(
     outputAudioCodec := "aac"
     if inputAudioCodec == outputAudioCodec {
         outputAudioCodec = "copy"
+    }
+
+    // If video resolution needs changing, video codec cannot be set to copy
+    if job.Resolution != "original" && outputVideoCodec == "copy" {
+        // Set output video codec manually
+        outputVideoCodec = "SKIP"
     }
 
     return outputVideoCodec, outputAudioCodec
@@ -132,9 +148,13 @@ func processVideo(
 
 func setVideoQuality(
     job *Job,
+    videoCodecArg string,
 ) string {
     switch job.Quality {
     case "lossless":
+        if videoCodecArg == "SKIP" {
+            return "1"
+        }
         return "0"
     case "high":
         return "12"

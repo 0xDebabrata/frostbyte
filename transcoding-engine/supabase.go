@@ -88,9 +88,15 @@ func uploadOutputFile(
     if err != nil {
         log.Fatalf("Error opening file: %v", err)
     }
-    fileData := bufio.NewReader(f)
 
-    result, err := storageClient.UploadFile(bucketId, filepath, fileData)
+    fileData := bufio.NewReader(f)
+    upsertParam := true
+    defaultContentType := "video/mp4"
+
+    result, err := storageClient.UploadFile(bucketId, filepath, fileData, storage_go.FileOptions{
+        Upsert: &upsertParam,
+        ContentType: &defaultContentType,
+    })
     if err != nil {
         log.Fatalf("Error uploading file: %v", err)
     }
