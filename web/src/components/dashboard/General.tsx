@@ -9,6 +9,7 @@ import { useState } from 'react'
 import toast from 'react-hot-toast'
 
 import Loader from '../Loader'
+import { Project } from '@/utils/types'
 
 interface GeneralProjectDashboardProps {
   project: Project | null;
