@@ -30,14 +30,10 @@ export default function Dashboard() {
 
   const fetchProjects = async () => {
     setLoading(true);
-    
+
     const { data: supabaseProjects, error } = await supabase
       .from("supabase_projects")
       .select("id, name, connected_at");
-
-    if (!error) {
-      console.error(error);
-    }
 
     if (supabaseProjects) {
       setProjects(supabaseProjects);
@@ -58,8 +54,8 @@ export default function Dashboard() {
   }, []);
 
   const redirectToProject = (projectId: number) => {
-    router.push(`/dashboard/${projectId}`)
-  }
+    router.push(`/dashboard/${projectId}`);
+  };
 
   useEffect(() => {
     fetchProjects();
