@@ -18,6 +18,8 @@ export default function CreateJobForm({
 }: CreateJobFormProps) {
   const [loading, setLoading] = useState(false)
 
+  const [name, setName] = useState("")
+
   const inputBucketChoices = buckets
   const [inputBucket, setInputBucket] = useState("");
 
@@ -52,11 +54,13 @@ export default function CreateJobForm({
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (
+      !name ||
       !inputBucket ||
       !outputBucket ||
       !outputFormat ||
       !outputResolution ||
       !outputQuality ||
+      !name.trim() ||
       !inputBucket.trim() ||
       !outputBucket.trim() ||
       !outputFormat.trim() ||
@@ -73,6 +77,7 @@ export default function CreateJobForm({
       method: "POST",
       body: JSON.stringify({
         projectId,
+        name,
         inputBucket,
         outputBucket,
         outputFormat,
@@ -145,10 +150,31 @@ export default function CreateJobForm({
                             <p className="mt-1 text-sm leading-6 text-neutral-400">
                               Configure transcoding parameters for videos uploaded to your input bucket.
                             </p>
-
                             <div className="mt-4">
-                              {/* Input bucket  */}
+                              {/* Job name */}
                               <div>
+                                <label
+                                  htmlFor="username"
+                                  className="block text-sm font-medium leading-6 text-neutral-200"
+                                >
+                                  Job name
+                                </label>
+                                <div className="mt-2">
+                                  <input
+                                    type="text"
+                                    name="name"
+                                    id="name"
+                                    className="block w-full rounded-md border-0 py-1.5 text-neutral-200 bg-neutral-700 shadow-sm ring-1 ring-inset ring-neutral-600 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-neutral-400 sm:text-sm sm:leading-6"
+                                    placeholder="netflix-01"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    required
+                                  />
+                                </div>
+                              </div>
+
+                              {/* Input bucket  */}
+                              <div className="mt-4">
                                 <label
                                   htmlFor="username"
                                   className="block text-sm font-medium leading-6 text-neutral-200"

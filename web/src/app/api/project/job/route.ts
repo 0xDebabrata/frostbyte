@@ -24,6 +24,7 @@ export const POST = async (req: Request, res: Response) => {
   }
 
   const {
+    name,
     inputBucket,
     outputBucket,
     outputFormat,
@@ -33,12 +34,14 @@ export const POST = async (req: Request, res: Response) => {
   } = await req.json()
 
   if (
+    !name ||
     !inputBucket ||
     !outputBucket ||
     !outputFormat ||
     !outputResolution ||
     !outputQuality ||
     !projectId ||
+    !name.trim() ||
     !inputBucket.trim() ||
     !outputBucket.trim() ||
     !outputFormat.trim() ||
@@ -55,6 +58,7 @@ export const POST = async (req: Request, res: Response) => {
     .from("jobs")
     .insert({
       id: jobId,
+      name: name,
       project_id: projectId,
       input_bucket: inputBucket,
       output_bucket: outputBucket,
