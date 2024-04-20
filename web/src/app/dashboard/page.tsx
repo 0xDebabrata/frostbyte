@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Database } from "@/utils/supabase";
 import CreateProjectModal from "@/components/Modal/CreateProjectModal";
 import { createClient } from "@/utils/supabase/client";
+import Loader from "@/components/Loader";
 
 export default function Dashboard() {
   const [open, setOpen] = useState(false);
@@ -31,8 +32,9 @@ export default function Dashboard() {
 
     const { data: supabase_projects, error } = await supabase
       .from("supabase_projects")
-      .select("*");
+      .select("id, name, connected_at");
 
+    console.log("Data", supabase_projects);
     if (!error) {
       console.error(error);
     }
@@ -55,7 +57,9 @@ export default function Dashboard() {
         New project
       </button>
       {loading ? (
-        <div className="pt-10">Loading... </div>
+        <div className="pt-10">
+          <Loader />
+        </div>
       ) : (
         <div className="pt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {projects.map((project) => (
