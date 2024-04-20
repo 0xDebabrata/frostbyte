@@ -1,9 +1,21 @@
 import { randomBytes } from "crypto";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+
+import { createClient } from "@/utils/supabase/server";
 
 export const POST = async (req: Request, res: Response) => {
-  // TODO: Add authentication
-  const userId = "test"
+  const supabase = createClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
+  if (error) {
+    console.error(error)
+    return new NextResponse(JSON.stringify({ error: error.message }), { status: 500 })
+  }
+
+  if (!user) {
+    return new NextResponse(JSON.stringify({
+      error: "Not authorized"
+    }), { status: 403 })
+  }
 
   const { name, supabaseUrl, supabaseKey } = await req.json()
 
@@ -14,9 +26,21 @@ export const POST = async (req: Request, res: Response) => {
   }
 
   const projectAPIKey = "sk_" + randomBytes(32).toString("hex")
-  console.log({ name, supabaseKey, supabaseUrl, apiKey: projectAPIKey })
 
   // Supabase RPC call to insert_supabase_project
+  const { data, error: rpcError } = await supabase.rpc("insert_supabase_project", {
+    project_name: name,
+    supabase_url: supabaseUrl,
+    supabase_secret: supabaseKey,
+    api_key: projectAPIKey,
+    user_id: user.id,
+  })
+  if (rpcError) {
+    console.error(rpcError)
+    return new NextResponse(JSON.stringify({ error: rpcError.message }), { status: 500 })
+  }
 
-  return new NextResponse("ok", { status: 200 })
+  return new NextResponse(JSON.stringify({
+    projectId: data
+  }), { status: 200 })
 }

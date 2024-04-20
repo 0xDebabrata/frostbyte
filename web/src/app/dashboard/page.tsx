@@ -38,7 +38,7 @@ export default function Dashboard() {
   }, [])
 
   return (
-    <div className="p-10 lg:p-24 min-h-screen bg-gradient-to-b from-neutral-800 to-zinc-900">
+    <div className="p-10 py-10 lg:px-24 min-h-screen bg-gradient-to-b from-neutral-800 to-zinc-900">
       <h1 className="font-mono text-3xl">
         Projects
       </h1>
