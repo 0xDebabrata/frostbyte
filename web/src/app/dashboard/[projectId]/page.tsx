@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
+import { createClient } from '@/utils/supabase/client'
 import GeneralProjectDashboard from "@/components/dashboard/General"
 import Jobs from "@/components/dashboard/Jobs"
 
@@ -16,11 +17,15 @@ interface ProjectPageParams {
 }
 
 export default function ProjectPage({ params }: ProjectPageParams) {
+  const supabase = createClient()
+
   const projectId = parseInt(params["projectId"])
+  const [projectLoading, setProjectLoading] = useState(true)
+  const [project, setProject] = useState<Project|null>(null)
 
   const [navigation, setNavigation] = useState([
-    { name: 'General', current: true, component: <GeneralProjectDashboard projectId={projectId} /> },
-    { name: 'Jobs', current: false, component: <Jobs /> },
+    { name: 'General', current: true },
+    { name: 'Jobs', current: false },
     { name: 'Logs', current: false },
   ])
 
@@ -35,11 +40,37 @@ export default function ProjectPage({ params }: ProjectPageParams) {
     })
   }
 
+  const fetchProjectDetails = async () => {
+    const { data } = await supabase
+      .from("supabase_projects")
+      .select("id, name, supabase_url")
+      .eq("id", projectId)
+    if (data && data.length) {
+      const apiKey = await fetchApiKey()
+      setProject({
+        ...data[0],
+        decrypted_api_key: apiKey,
+      })
+      setProjectLoading(false)
+    }
+  }
+  const fetchApiKey = async () => {
+    const resp = await fetch(`/api/project/apiKey?projectId=${projectId}`)
+    const { apiKey } = await resp.json()
+    return apiKey as string
+  }
+
+  useEffect(() => {
+    fetchProjectDetails()
+  }, [])
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-neutral-800 to-zinc-900">
       <header className="bg-neutral-900 shadow">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold font-mono leading-tight tracking-tight text-neutral-100">project 01</h1>
+          <h1 className="text-3xl font-bold font-mono leading-tight tracking-tight text-neutral-100">
+            {project?.name || "frostbyte project"}
+          </h1>
         </div>
       </header>
 
@@ -73,7 +104,15 @@ export default function ProjectPage({ params }: ProjectPageParams) {
 
       <main>
         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-          {navigation.filter(item => item.current)[0].component}
+          {navigation.filter(item => item.current)[0].name === "General" && (
+            <GeneralProjectDashboard
+              project={project}
+              loading={projectLoading}
+            />
+          )}
+          {navigation.filter(item => item.current)[0].name === "Jobs" && (
+            <Jobs />
+          )}
         </div>
       </main>
     </div>
