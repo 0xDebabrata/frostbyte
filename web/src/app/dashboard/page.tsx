@@ -46,15 +46,14 @@ export default function Dashboard() {
 
   // Redirect to login if user not signed in
   useEffect(() => {
-    console.log("Check user signed in");
-    const fetchSession = async () => {
+    const redirectLoggedOutUser = async () => {
       const { data, error } = await supabase.auth.getSession();
-      return data;
+      if (!data.session) {
+        router.push("/");
+      }
     };
-    const session = fetchSession();
-    if (!session.session) {
-      router.push("/");
-    }
+
+    redirectLoggedOutUser();
   }, []);
 
   useEffect(() => {
