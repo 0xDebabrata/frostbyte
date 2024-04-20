@@ -3,6 +3,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
 import Dropdown from "@/components/Dropdown";
+import Loader from '@/components/Loader';
 
 interface CreateJobFormProps {
   open: boolean;
@@ -12,6 +13,8 @@ interface CreateJobFormProps {
 export default function CreateJobForm({
   open, setOpen,
 }: CreateJobFormProps) {
+  const [loading, setLoading] = useState(false)
+
   const inputBucketChoices = [
     "Durward Reynolds",
     "Debarghya Mondal",
@@ -199,14 +202,14 @@ export default function CreateJobForm({
                             </div>
                           </div>
                         </div>
-                        <div className='flex'>
-                          <button
-                            onClick={() => setOpen(false)}
-                            className="ml-auto rounded py-1 px-3 bg-teal-700 border border-teal-500 text-white text-sm"
-                          >
-                            Create
-                          </button>
-                        </div>
+                        <button
+                          onClick={() => setOpen(false)}
+                          disabled={loading}
+                          className="w-full flex items-center justify-center rounded py-2 px-3 bg-teal-700 border border-teal-500 text-white text-sm"
+                        >
+                          Create
+                          {loading && <Loader />}
+                        </button>
                       </form>
                     </div>
                   </div>
