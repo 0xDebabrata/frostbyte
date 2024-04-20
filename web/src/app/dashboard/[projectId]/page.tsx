@@ -56,7 +56,7 @@ export default function ProjectPage({ params }: ProjectPageParams) {
                         item.current
                           ? 'bg-neutral-700 text-neutral-100'
                           : 'text-white hover:bg-neutral-700 hover:bg-opacity-75',
-                        'rounded-md px-3 py-2 text-sm duration-150 cursor-pointer'
+                        'rounded-md px-3 py-1 border border-neutral-600 text-sm duration-150 cursor-pointer'
                       )}
                       aria-current={item.current ? 'page' : undefined}
                       onClick={() => updateNavigation(idx)}

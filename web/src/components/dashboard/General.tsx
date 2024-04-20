@@ -106,7 +106,7 @@ export default function GeneralProjectDashboard({
                   id="url"
                   disabled
                   className="block bg-neutral-700 w-full rounded-md border-0 py-1.5 text-neutral-400 shadow-sm ring-1 ring-neutral-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-neutral-600 disabled:cursor-not-allowed disabled:ring-neutral-600 sm:text-sm sm:leading-6"
-                  value={project.supabase_url}
+                  value={project?.supabase_url}
                 />
               </div>
             </div>
