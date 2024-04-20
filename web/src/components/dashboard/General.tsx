@@ -21,7 +21,6 @@ export default function GeneralProjectDashboard({
 }: GeneralProjectDashboardProps) {
   const [apiKeyHidden, setApiKeyHidden] = useState(true)
 
-
   const copyApiKey = () => {
     navigator.clipboard.writeText(project?.decrypted_api_key || "");
     toast.success("API Key copied to clipboard")

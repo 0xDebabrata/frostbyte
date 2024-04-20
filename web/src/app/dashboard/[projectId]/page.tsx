@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { createClient } from '@/utils/supabase/client'
 import GeneralProjectDashboard from "@/components/dashboard/General"
 import Jobs from "@/components/dashboard/Jobs"
+import { Project } from "@/utils/types"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -67,7 +68,7 @@ export default function ProjectPage({ params }: ProjectPageParams) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-neutral-800 to-zinc-900">
       <header className="bg-neutral-900 shadow">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="max-w-7xl px-10 py-6 sm:px-24">
           <h1 className="text-3xl font-bold font-mono leading-tight tracking-tight text-neutral-100">
             {project?.name || "frostbyte project"}
           </h1>
@@ -75,7 +76,7 @@ export default function ProjectPage({ params }: ProjectPageParams) {
       </header>
 
       <nav className="bg-neutral-800 border-b border-neutral-700">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl px-10 sm:px-24">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
               <div className="">
@@ -103,7 +104,7 @@ export default function ProjectPage({ params }: ProjectPageParams) {
       </nav>
 
       <main>
-        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl py-6 px-10 sm:px-24">
           {navigation.filter(item => item.current)[0].name === "General" && (
             <GeneralProjectDashboard
               project={project}
