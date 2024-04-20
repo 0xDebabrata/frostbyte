@@ -11,7 +11,6 @@ func main() {
     createDirectory(tempDirectory)
 
     jobsChannel := make(chan Job)
-    /*
     createTopic(topicNameMap["jobs"])
     produceJob(Job{
         Id: "1",
@@ -21,12 +20,11 @@ func main() {
         ObjectName: "video_20240227_161742.mp4",
         OutputBucketId: "test_output",
         VideoCodec: "original",
-        Resolution: "original",
+        Resolution: "480p",
         Quality: "lossless",
         ReceivedAt: 0,
         ProcessedAt: 0,
     })
-    */
 
     go readJob(jobsChannel)
 
@@ -34,12 +32,9 @@ func main() {
         select {
         case job := <-jobsChannel:
             projectDetails := getUserProjectDetails(job.ProjectId)
-            log.Println("Supabase URL:", projectDetails.SupabaseUrl)
 
             localFilePath := fmt.Sprintf("%s/%s_%s", tempDirectory, time.Now().String(), job.ObjectName)
             localOutputPath := fmt.Sprintf("%s/output_%s_%s", tempDirectory, time.Now().String(), job.ObjectName)
-            log.Println("Input path:", localFilePath)
-            log.Println("Output path:", localOutputPath)
 
             // Download input file
             downloadInputFile(

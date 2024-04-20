@@ -2,15 +2,24 @@
 
 import { useState } from "react"
 
+import GeneralProjectDashboard from "@/components/dashboard/General"
 import Jobs from "@/components/dashboard/Jobs"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function ProjectPage() {
+interface ProjectPageParams {
+  params: {
+    [k:string]: string;
+  };
+}
+
+export default function ProjectPage({ params }: ProjectPageParams) {
+  const projectId = parseInt(params["projectId"])
+
   const [navigation, setNavigation] = useState([
-    { name: 'General', current: true },
+    { name: 'General', current: true, component: <GeneralProjectDashboard projectId={projectId} /> },
     { name: 'Jobs', current: false, component: <Jobs /> },
     { name: 'Logs', current: false },
   ])
@@ -38,7 +47,7 @@ export default function ProjectPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
-              <div className="hidden md:block">
+              <div className="">
                 <div className="flex items-baseline space-x-4">
                   {navigation.map((item, idx) => (
                     <p

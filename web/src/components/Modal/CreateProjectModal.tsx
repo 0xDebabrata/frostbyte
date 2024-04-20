@@ -1,6 +1,7 @@
 import { Dispatch, FormEvent, Fragment, SetStateAction, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 interface CreateProjectModalProps {
   open: boolean;
@@ -11,6 +12,8 @@ export default function CreateProjectModal({
   open,
   setOpen,
 }: CreateProjectModalProps) {
+  const router = useRouter()
+
   const [name, setName] = useState("")
   const [supabaseUrl, setSupabaseUrl] = useState("")
   const [supabaseKey, setSupabaseKey] = useState("")
@@ -25,7 +28,7 @@ export default function CreateProjectModal({
       return
     }
 
-    await fetch("/api/project/create", {
+    const resp = await fetch("/api/project/create", {
       method: "POST",
       body: JSON.stringify({
         name,
@@ -33,6 +36,8 @@ export default function CreateProjectModal({
         supabaseKey,
       })
     })
+    const { projectId } = await resp.json()
+    router.push(`/dashboard/${projectId}`)
 
     toast.success("Project created successfully")
   }
