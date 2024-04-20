@@ -1,45 +1,67 @@
-'use client'
+"use client";
 
-import { useState } from "react"
-
-import GeneralProjectDashboard from "@/components/dashboard/General"
-import Jobs from "@/components/dashboard/Jobs"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
+import GeneralProjectDashboard from "@/components/dashboard/General";
+import Jobs from "@/components/dashboard/Jobs";
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 interface ProjectPageParams {
   params: {
-    [k:string]: string;
+    [k: string]: string;
   };
 }
 
 export default function ProjectPage({ params }: ProjectPageParams) {
-  const projectId = parseInt(params["projectId"])
+  const projectId = parseInt(params["projectId"]);
+  const supabase = createClient();
+  const router = useRouter();
 
   const [navigation, setNavigation] = useState([
-    { name: 'General', current: true, component: <GeneralProjectDashboard projectId={projectId} /> },
-    { name: 'Jobs', current: false, component: <Jobs /> },
-    { name: 'Logs', current: false },
-  ])
+    {
+      name: "General",
+      current: true,
+      component: <GeneralProjectDashboard projectId={projectId} />,
+    },
+    { name: "Jobs", current: false, component: <Jobs /> },
+    { name: "Logs", current: false },
+  ]);
 
   const updateNavigation = (idx: number) => {
-    setNavigation(prev => {
-      const updatedNav = prev.map(item => {
-        item.current = false
-        return item
-      })
-      updatedNav[idx].current = true
-      return updatedNav
-    })
-  }
+    setNavigation((prev) => {
+      const updatedNav = prev.map((item) => {
+        item.current = false;
+        return item;
+      });
+      updatedNav[idx].current = true;
+      return updatedNav;
+    });
+  };
+
+  // Redirect to login if user not signed in
+  useEffect(() => {
+    console.log("Check user signed in");
+    const fetchSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      return data;
+    };
+    const session = fetchSession();
+    if (!session.session) {
+      router.push("/");
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-neutral-800 to-zinc-900">
       <header className="bg-neutral-900 shadow">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold font-mono leading-tight tracking-tight text-neutral-100">project 01</h1>
+          <h1 className="text-3xl font-bold font-mono leading-tight tracking-tight text-neutral-100">
+            project 01
+          </h1>
         </div>
       </header>
 
@@ -54,11 +76,11 @@ export default function ProjectPage({ params }: ProjectPageParams) {
                       key={item.name}
                       className={classNames(
                         item.current
-                          ? 'bg-neutral-700 text-neutral-100'
-                          : 'text-white hover:bg-neutral-700 hover:bg-opacity-75',
-                        'rounded-md px-3 py-2 text-sm duration-150 cursor-pointer'
+                          ? "bg-neutral-700 text-neutral-100"
+                          : "text-white hover:bg-neutral-700 hover:bg-opacity-75",
+                        "rounded-md px-3 py-2 text-sm duration-150 cursor-pointer"
                       )}
-                      aria-current={item.current ? 'page' : undefined}
+                      aria-current={item.current ? "page" : undefined}
                       onClick={() => updateNavigation(idx)}
                     >
                       {item.name}
@@ -73,9 +95,9 @@ export default function ProjectPage({ params }: ProjectPageParams) {
 
       <main>
         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-          {navigation.filter(item => item.current)[0].component}
+          {navigation.filter((item) => item.current)[0].component}
         </div>
       </main>
     </div>
-  )
+  );
 }

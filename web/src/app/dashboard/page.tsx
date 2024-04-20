@@ -6,8 +6,11 @@ import { Database } from "@/utils/supabase";
 import CreateProjectModal from "@/components/Modal/CreateProjectModal";
 import { createClient } from "@/utils/supabase/client";
 import Loader from "@/components/Loader";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
+  const supabase = createClient();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [projects, setProjects] = useState<
@@ -28,8 +31,6 @@ export default function Dashboard() {
 
   const fetchProjects = async () => {
     setLoading(true);
-    const supabase = createClient();
-
     const { data: supabase_projects, error } = await supabase
       .from("supabase_projects")
       .select("id, name, connected_at");
@@ -42,6 +43,19 @@ export default function Dashboard() {
     setProjects(supabase_projects);
     setLoading(false);
   };
+
+  // Redirect to login if user not signed in
+  useEffect(() => {
+    console.log("Check user signed in");
+    const fetchSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      return data;
+    };
+    const session = fetchSession();
+    if (!session.session) {
+      router.push("/");
+    }
+  }, []);
 
   useEffect(() => {
     fetchProjects();
