@@ -3,8 +3,6 @@ import { Dialog, Transition } from '@headlessui/react'
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
-import { createClient } from '@/utils/supabase/client';
-
 interface CreateProjectModalProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -15,7 +13,6 @@ export default function CreateProjectModal({
   setOpen,
 }: CreateProjectModalProps) {
   const router = useRouter()
-  const supabase = createClient()
 
   const [name, setName] = useState("")
   const [supabaseUrl, setSupabaseUrl] = useState("")
@@ -31,13 +28,8 @@ export default function CreateProjectModal({
       return
     }
 
-    const { data: { session }} = await supabase.auth.getSession()
-
     const resp = await fetch("/api/project/create", {
       method: "POST",
-      headers: {
-        "Authorization": session!.access_token
-      },
       body: JSON.stringify({
         name,
         supabaseUrl,
