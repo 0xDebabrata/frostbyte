@@ -76,7 +76,7 @@ export default function Dashboard() {
             >
               <p className="font-light text-neutral-100 pb-2">{project.name}</p>
               <p className="font-light text-sm text-neutral-400">
-                Created at: {formatDate(project.connected_at)}
+                Created at: {formatDate(project.connected_at!)}
               </p>
             </div>
           ))}
