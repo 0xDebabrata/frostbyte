@@ -127,12 +127,6 @@ export default function Jobs({ projectId }: JobsProps) {
                 </div>
               </span>
               <p className="font-light text-sm text-neutral-400">
-                Created at:{" "}
-                <span className="font-light text-sm text-neutral-100">
-                  {formatDate(job.created_at!)}
-                </span>
-              </p>
-              <p className="font-light text-sm text-neutral-400">
                 Format:{" "}
                 <span className="font-light text-sm text-neutral-100">
                   {job.format}
@@ -148,6 +142,12 @@ export default function Jobs({ projectId }: JobsProps) {
                 Quality:{" "}
                 <span className="font-light text-sm text-neutral-100">
                   {job.quality}
+                </span>
+              </p>
+              <p className="font-light text-sm text-neutral-400">
+                Created at:{" "}
+                <span className="font-light text-sm text-neutral-100">
+                  {formatDate(job.created_at!)}
                 </span>
               </p>
             </div>

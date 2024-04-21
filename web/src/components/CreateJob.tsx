@@ -189,6 +189,11 @@ export default function CreateJobForm({
                                     setSelectedOption={setInputBucket}
                                   />
                                 </div>
+                                {!buckets.length ? (
+                                  <p className="mt-2 text-xs text-neutral-400" id="email-description">
+                                    Linked Supabase project doesn&apos;t have any buckets
+                                  </p>
+                                ) : null}
                               </div>
 
                               {/* Output bucket */}
@@ -206,6 +211,11 @@ export default function CreateJobForm({
                                     setSelectedOption={setOutputBucket}
                                   />
                                 </div>
+                                {!buckets.length ? (
+                                  <p className="mt-2 text-xs text-neutral-400" id="email-description">
+                                    Linked Supabase project doesn&apos;t have any buckets
+                                  </p>
+                                ) : null}
                               </div>
 
                               {/* Output format  */}
