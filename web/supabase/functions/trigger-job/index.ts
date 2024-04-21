@@ -5,6 +5,7 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 // <reference types="https://esm.sh/@supabase/functions-js/src/edge-runtime.d.ts" />
 
+import { metadata } from '@/app/layout'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.24.0'
 
 Deno.serve(async (req) => {
@@ -111,9 +112,9 @@ Deno.serve(async (req) => {
     InputBucketId: jobData.input_bucket,
     ObjectName: data.record.name,
     OutputBucketId: jobData.output_bucket,
-    VideoCodec: jobData.format,
-    Resolution: jobData.resolution,
-    Quality: jobData.quality,
+    VideoCodec: jobData.format.toLowerCase(),
+    Resolution: jobData.resolution.toLowerCase(),
+    Quality: jobData.quality.toLowerCase(),
     ReceivedAt: (new Date()).toISOString(),
     ProcessedAt: 0,
   }
@@ -125,6 +126,16 @@ Deno.serve(async (req) => {
     }
   })
   console.log("Event pushed to Kafka")
+
+  // Add to logs
+  await supabaseClient
+    .from("logs")
+    .insert({
+      status: "queued",
+      job_id: jobData.id,
+      user_id: jobData.user_id,
+      metadata: job,
+    })
 
   return new Response(
     JSON.stringify({ message:'Event pushed to Kafka successfully' }),

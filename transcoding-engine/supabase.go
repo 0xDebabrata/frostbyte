@@ -1,11 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"log"
 	"os"
-    "bufio"
+	"time"
 
 	storage_go "github.com/supabase-community/storage-go"
 	"github.com/supabase-community/supabase-go"
@@ -14,6 +15,12 @@ import (
 type SupabaseProjectDetails struct {
     SupabaseUrl         string  `json:"supabase_url"`
     SupabaseSecretKey   string  `json:"decrypted_supabase_secret_key"`
+}
+
+type LogUpdate struct {
+    status      string
+    message     string
+    processed   bool
 }
 
 func getSupabaseAdmin() *supabase.Client {
@@ -75,6 +82,28 @@ func downloadInputFile(
     // Write file to disk
     // 0644 -> we can read and write but other users can only read
     err = os.WriteFile(localFilepath, result, 0644)
+}
+
+func logUpdate(
+  param LogUpdate,
+) {
+    row := map[string]interface{}{
+      "status": param.status,
+      "message": param.message,
+    }
+    if param.processed {
+      currTime := time.Now().UTC().String()
+      row["processed_at"] = currTime
+    }
+
+    client := getSupabaseAdmin()
+    _, _, err := client.
+                        From("logs").
+                        Update(row, "", "").
+                        Execute()
+    if err != nil {
+        log.Fatalf("Error updating status: %v", err)
+    }
 }
 
 func uploadOutputFile(

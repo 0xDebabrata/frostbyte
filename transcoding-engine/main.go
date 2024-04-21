@@ -34,6 +34,7 @@ func main() {
         select {
         case job := <-jobsChannel:
             projectDetails := getUserProjectDetails(job.ProjectId)
+            logUpdate("processing")
 
             localFilePath := fmt.Sprintf("%s/%s_%s", tempDirectory, time.Now().String(), job.ObjectName)
             localOutputPath := fmt.Sprintf("%s/output_%s_%s", tempDirectory, time.Now().String(), job.ObjectName)
@@ -69,6 +70,7 @@ func main() {
             // Remove temporary files
             cleanup(localFilePath)
             cleanup(localOutputPath)
+            logUpdate("complete")
             log.Println("Finished job")
         }
     }
