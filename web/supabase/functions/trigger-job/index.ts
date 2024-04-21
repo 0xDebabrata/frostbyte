@@ -113,7 +113,7 @@ Deno.serve(async (req) => {
         project_id: jobData.project_id,
         user_id: jobData.user_id,
         metadata: job,
-        message: `Ignoring large file: ${data.record.metadata.size} bytes`
+        message: "File sizes larger than 25MB not allowed."
       })
     return new Response(
       JSON.stringify({ error: "File sizes larger than 25MB not allowed." }),
@@ -130,9 +130,10 @@ Deno.serve(async (req) => {
       .insert({
         status: "failed",
         job_id: jobData.id,
+        project_id: jobData.project_id,
         user_id: jobData.user_id,
         metadata: job,
-        message: `Ignoring non-video file: ${data.record.metadata.mimetype} mimetype`
+        message: `Ignoring non-video file: ${data.record.metadata.mimetype} mimetype.`
       })
     return new Response(
       JSON.stringify({ error: "Ignoring non-video file" }),
@@ -168,6 +169,7 @@ Deno.serve(async (req) => {
     .insert({
       status: "queued",
       job_id: jobData.id,
+      project_id: jobData.project_id,
       user_id: jobData.user_id,
       metadata: job,
     })

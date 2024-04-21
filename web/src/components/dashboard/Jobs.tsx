@@ -117,7 +117,7 @@ export default function Jobs({ projectId }: JobsProps) {
             </div>
             <div className="flex flex-row gap-2">
               <span className="absolute font-mono top-4 right-4 inline-flex items-center rounded-xl bg-indigo-400/10 px-3 py-1 text-xs font-medium text-indigo-400 ring-1 ring-inset ring-indigo-400/30">
-                {job.id}
+                ID: {job.id}
                 <div
                   onClick={() => copyJobId(job.id)}
                   className="cursor-pointer inset-y-0 right-0 flex items-center pl-2"
