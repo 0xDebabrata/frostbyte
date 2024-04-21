@@ -5,7 +5,6 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 // <reference types="https://esm.sh/@supabase/functions-js/src/edge-runtime.d.ts" />
 
-import { metadata } from '@/app/layout'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.24.0'
 
 Deno.serve(async (req) => {
@@ -88,6 +87,7 @@ Deno.serve(async (req) => {
 
   // Ignore files larger than 50MB
   if (data.record.metadata.size > 25000000) {
+    console.log("Ignoring large file", data.record.metadata.size)
     return new Response(
       JSON.stringify({ error: "File sizes larger than 25MB not allowed." }),
       {
@@ -95,6 +95,17 @@ Deno.serve(async (req) => {
         status: 469,
       },
     )
+  // Ignore non-video files
+  } else if (!data.record.metadata.mimetype.startsWith("video")) {
+    console.log("Ignoring non-video file", data.record.metadata.mimetype)
+    return new Response(
+      JSON.stringify({ error: "Ignoring non-video file" }),
+      {
+        headers: { "Content-Type": "application/json" },
+        status: 469,
+      },
+    )
+  // Ignore if job input bucket is different from the bucket the object was uploaded to
   } else if (data.record.bucket_id !== jobData.input_bucket) {
     return new Response(
       JSON.stringify({ error: "Job ID and file upload bucket does not match" }),
