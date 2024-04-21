@@ -19,7 +19,7 @@ export default function Jobs({ projectId }: JobsProps) {
 
   const [openPanel, setOpenPanel] = useState(false);
   const [buckets, setBuckets] = useState<Bucket[]>([]);
-  const [jobs, setJobs] = useState([]);
+  const [jobs, setJobs] = useState<any[]>([]);
   const [refresh, setRefresh] = useState(true);
   const [loading, setLoading] = useState(true);
 
@@ -73,7 +73,7 @@ export default function Jobs({ projectId }: JobsProps) {
     fetchSupabaseProjectBuckets();
   }, []);
 
-  const copyApiKey = (jobId) => {
+  const copyJobId = (jobId: string) => {
     navigator.clipboard.writeText(jobId);
     toast.success("Job ID copied to clipboard");
   };
@@ -113,10 +113,10 @@ export default function Jobs({ projectId }: JobsProps) {
               </p>
             </div>
             <div className="flex flex-row gap-2">
-              <span className="absolute top-4 right-4 inline-flex items-center rounded-xl bg-indigo-400/10 px-3 py-1 text-xs font-medium text-indigo-400 ring-1 ring-inset ring-indigo-400/30">
+              <span className="absolute font-mono top-4 right-4 inline-flex items-center rounded-xl bg-indigo-400/10 px-3 py-1 text-xs font-medium text-indigo-400 ring-1 ring-inset ring-indigo-400/30">
                 {job.id}
                 <div
-                  onClick={() => copyApiKey(job.id)}
+                  onClick={() => copyJobId(job.id)}
                   className="cursor-pointer inset-y-0 right-0 flex items-center pl-2"
                 >
                   <ClipboardDocumentIcon
