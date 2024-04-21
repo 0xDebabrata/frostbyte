@@ -89,7 +89,7 @@ func main() {
             // Upload converted file
             err = uploadOutputFile(
                 job.OutputBucketId,
-                fmt.Sprintf("frostbyte_output_%s", job.ObjectName),
+                fmt.Sprintf("frostbyte_output_%s_%s", job.Id, job.ObjectName),
                 localOutputPath,
                 projectDetails,
             )
