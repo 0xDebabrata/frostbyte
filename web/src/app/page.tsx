@@ -16,28 +16,32 @@ export default function Home() {
   const supabase = createClient();
   const router = useRouter();
 
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<User | null>(null);
 
   async function signInWithGithub() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000") + "/dashboard"
-      }
+        redirectTo:
+          (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000") +
+          "/dashboard",
+      },
     });
     if (error) {
-      console.error(error)
+      console.error(error);
     }
   }
 
   function redirectToDashboard() {
-    router.push("/dashboard")
+    router.push("/dashboard");
   }
 
   useEffect(() => {
     const initialiseUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user)
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
     };
 
     initialiseUser();
