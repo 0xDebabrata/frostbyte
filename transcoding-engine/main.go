@@ -67,7 +67,7 @@ func main() {
             // Upload converted file
             uploadOutputFile(
                 job.OutputBucketId,
-                job.ObjectName,
+                fmt.Sprintf("frostbyte_output_%s", job.ObjectName),
                 localOutputPath,
                 projectDetails,
             )

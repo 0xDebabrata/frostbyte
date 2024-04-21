@@ -93,7 +93,7 @@ func logUpdate(
       "message": param.message,
     }
     if param.processed {
-      currTime := time.Now().UTC().String()
+      currTime := time.Now().UTC().Format(time.RFC3339)
       row["processed_at"] = currTime
     }
 
