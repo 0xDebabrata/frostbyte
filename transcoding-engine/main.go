@@ -71,16 +71,13 @@ func main() {
 
             // Conversion process
             inputVideoData, err := probeInputVideoData(localFilePath)
-            log.Println("Video probed")
             if err != nil {
                 logErrorToSupabase(
                     &logUpdateParam,
                     fmt.Sprintf("Error probing file: %v", err),
                 )
-                log.Println("here")
                 break
             }
-            log.Println("here 2")
             processVideo(
                 localFilePath,
                 localOutputPath,
