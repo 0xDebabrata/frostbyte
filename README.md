@@ -4,7 +4,9 @@ Frostbyte is an easy to use video transcoder service that works with Supabase St
 
 Frostbyte is complete with a web-interface for creating and monitoring current jobs under any of your connected Supabase projects. We authenticate using Github and encrypt your project keys as well. With cloud-based transcoding, you can focus on delivering compelling media experiences and worry less about maintaining video processing infrastructure.
 
-[Visit the site to try it out yourself!](https://github.com/0xDebabrata/frostbyte)\\
+[Demo video](https://youtu.be/wFkGHitxUss)
+
+[Visit the site to try it out yourself!](https://github.com/0xDebabrata/frostbyte)
 
 ### How it works:
 
@@ -30,3 +32,8 @@ Supabase Hackathons are always super fun and we are excited to showcase Frostbyt
 2. Scale backend architecture to support larger file sizes and faster processing
 3. Make the process fully automated by capturing user's DB credentials to set up triggers
 4. Get acquired by Supabase
+
+### The team
+- Debarghya Mondal / [GitHub](https://github.com/DebMondalX) / [Twitter](https://twitter.com/DebarghyaMond14)
+- Anish Basu / [GitHub](https://github.com/dinosoupy) / [Twitter](https://twitter.com/_anishbasu)
+- Debabrata Mondal / [GitHub](https://github.com/0xDebabrata) / [Twitter](https://twitter.com/0xDebabrata)
