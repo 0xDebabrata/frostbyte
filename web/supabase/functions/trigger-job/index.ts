@@ -7,6 +7,8 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.24.0'
 
+const frostbyteOutputPrefix = "frostbyte_output_"
+
 Deno.serve(async (req) => {
   const apiKey = req.headers.get('x-frostbyte-api-key')!
   const url = new URL(req.url)
@@ -85,37 +87,6 @@ Deno.serve(async (req) => {
   const data = await req.json()
   jobData = jobData[0]
 
-  // Ignore files larger than 50MB
-  if (data.record.metadata.size > 25000000) {
-    console.log("Ignoring large file", data.record.metadata.size)
-    return new Response(
-      JSON.stringify({ error: "File sizes larger than 25MB not allowed." }),
-      {
-        headers: { "Content-Type": "application/json" },
-        status: 469,
-      },
-    )
-  // Ignore non-video files
-  } else if (!data.record.metadata.mimetype.startsWith("video")) {
-    console.log("Ignoring non-video file", data.record.metadata.mimetype)
-    return new Response(
-      JSON.stringify({ error: "Ignoring non-video file" }),
-      {
-        headers: { "Content-Type": "application/json" },
-        status: 469,
-      },
-    )
-  // Ignore if job input bucket is different from the bucket the object was uploaded to
-  } else if (data.record.bucket_id !== jobData.input_bucket) {
-    return new Response(
-      JSON.stringify({ error: "Job ID and file upload bucket does not match" }),
-      {
-        headers: { "Content-Type": "application/json" },
-        status: 469,
-      },
-    )
-  }
-
   let job = {
     Id: jobData.id,
     UserId: jobData.user_id,
@@ -129,6 +100,65 @@ Deno.serve(async (req) => {
     ReceivedAt: (new Date()).toISOString(),
     ProcessedAt: 0,
     LogId: 0,
+  }
+
+  // Ignore files larger than 50MB
+  if (data.record.metadata.size > 25000000) {
+    console.log("Ignoring large file", data.record.metadata.size)
+    await supabaseClient
+      .from("logs")
+      .insert({
+        status: "failed",
+        job_id: jobData.id,
+        user_id: jobData.user_id,
+        metadata: job,
+        message: `Ignoring large file: ${data.record.metadata.size} bytes`
+      })
+    return new Response(
+      JSON.stringify({ error: "File sizes larger than 25MB not allowed." }),
+      {
+        headers: { "Content-Type": "application/json" },
+        status: 469,
+      },
+    )
+  // Ignore non-video files
+  } else if (!data.record.metadata.mimetype.startsWith("video")) {
+    console.log("Ignoring non-video file", data.record.metadata.mimetype)
+    await supabaseClient
+      .from("logs")
+      .insert({
+        status: "failed",
+        job_id: jobData.id,
+        user_id: jobData.user_id,
+        metadata: job,
+        message: `Ignoring non-video file: ${data.record.metadata.mimetype} mimetype`
+      })
+    return new Response(
+      JSON.stringify({ error: "Ignoring non-video file" }),
+      {
+        headers: { "Content-Type": "application/json" },
+        status: 469,
+      },
+    )
+  // Ignore if inserted file is actually the output from frostbyte.
+  // If input and output buckets are same, this prevents recursion.
+  } else if (data.record.name.startsWith(frostbyteOutputPrefix)) {
+    return new Response(
+      JSON.stringify({ message: "Possible recursion" }),
+      {
+        headers: { "Content-Type": "application/json" },
+        status: 200,
+      },
+    )
+  // Ignore if job input bucket is different from the bucket the object was uploaded to
+  } else if (data.record.bucket_id !== jobData.input_bucket) {
+    return new Response(
+      JSON.stringify({ error: "Job ID and file upload bucket does not match" }),
+      {
+        headers: { "Content-Type": "application/json" },
+        status: 469,
+      },
+    )
   }
 
   // Add to logs
