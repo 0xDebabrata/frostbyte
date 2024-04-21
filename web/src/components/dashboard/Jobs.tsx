@@ -55,7 +55,8 @@ export default function Jobs({ projectId }: JobsProps) {
       .from("jobs")
       .select(
         "id, name, created_at, input_bucket, output_bucket, format, resolution, quality"
-      );
+      )
+      .order("created_at", { ascending: false });
     if (error) {
       console.error(error);
       return;

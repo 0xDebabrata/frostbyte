@@ -90,6 +90,7 @@ export default function CreateJobForm({
       duration: 8000
     })
     setLoading(false)
+    setOpen(false)
   }
 
   return (
