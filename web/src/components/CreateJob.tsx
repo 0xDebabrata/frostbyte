@@ -3,6 +3,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
 import Dropdown from "@/components/Dropdown";
+import SQLHelp from './SQLHelp';
 import Loader from '@/components/Loader';
 import toast from 'react-hot-toast';
 
@@ -280,6 +281,9 @@ export default function CreateJobForm({
                           {loading && <Loader />}
                         </button>
                       </form>
+                      <div className='py-5'>
+                        <SQLHelp />
+                      </div>
                     </div>
                   </div>
                 </Dialog.Panel>

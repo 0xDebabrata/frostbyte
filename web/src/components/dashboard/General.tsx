@@ -9,6 +9,7 @@ import { useState } from 'react'
 import toast from 'react-hot-toast'
 
 import Loader from '../Loader'
+import SQLHelp from '../SQLHelp'
 import { Project } from '@/utils/types'
 
 interface GeneralProjectDashboardProps {
@@ -39,7 +40,7 @@ export default function GeneralProjectDashboard({
           <>
             <div>
               <label htmlFor="api-key" className="block text-sm font-medium leading-6 text-neutral-200">
-                API Key
+                Frostbyte API Key
               </label>
               <div className="relative mt-2 rounded-md shadow-sm">
                 <input
@@ -89,6 +90,7 @@ export default function GeneralProjectDashboard({
       <h2 className="mt-6 text-neutral-100 text-xl">
         Instructions
       </h2>
+      <SQLHelp />
     </div>
   )
 }
