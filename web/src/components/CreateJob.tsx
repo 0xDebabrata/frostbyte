@@ -42,7 +42,7 @@ export default function CreateJobForm({
     "4k",
     "1080p",
     "720p",
-    "360p",
+    "480p",
   ];
   const [outputResolution, setOutputResolution] = useState(outputResolutionChoices[0]);
 
