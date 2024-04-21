@@ -38,6 +38,7 @@ func main() {
                 status: "processing",
                 processed: false,
                 message: "",
+                logId: job.LogID,
             }
             logUpdate(logUpdateParam)
 

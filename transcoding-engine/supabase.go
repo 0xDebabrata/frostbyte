@@ -18,6 +18,7 @@ type SupabaseProjectDetails struct {
 }
 
 type LogUpdate struct {
+    logId       int
     status      string
     message     string
     processed   bool
@@ -100,6 +101,7 @@ func logUpdate(
     _, _, err := client.
                         From("logs").
                         Update(row, "", "").
+                        Eq("id", fmt.Sprintf("%d", param.logId)).
                         Execute()
     if err != nil {
         log.Fatalf("Error updating status: %v", err)

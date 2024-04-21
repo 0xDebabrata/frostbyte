@@ -116,7 +116,7 @@ Deno.serve(async (req) => {
     )
   }
 
-  const job = {
+  let job = {
     Id: jobData.id,
     UserId: jobData.user_id,
     ProjectId: jobData.project_id,
@@ -128,7 +128,21 @@ Deno.serve(async (req) => {
     Quality: jobData.quality.toLowerCase(),
     ReceivedAt: (new Date()).toISOString(),
     ProcessedAt: 0,
+    LogId: 0,
   }
+
+  // Add to logs
+  const { data: logData } = await supabaseClient
+    .from("logs")
+    .insert({
+      status: "queued",
+      job_id: jobData.id,
+      user_id: jobData.user_id,
+      metadata: job,
+    })
+    .select("id")
+  const logId = logData[0].id
+  job.LogId = logId
 
   // Push event to kafka
   await fetch(`https://composed-firefly-12504-eu2-rest-kafka.upstash.io/produce/jobs/${JSON.stringify(job)}`, {
@@ -137,16 +151,6 @@ Deno.serve(async (req) => {
     }
   })
   console.log("Event pushed to Kafka")
-
-  // Add to logs
-  await supabaseClient
-    .from("logs")
-    .insert({
-      status: "queued",
-      job_id: jobData.id,
-      user_id: jobData.user_id,
-      metadata: job,
-    })
 
   return new Response(
     JSON.stringify({ message:'Event pushed to Kafka successfully' }),

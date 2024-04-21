@@ -24,6 +24,8 @@ type Job struct {
 
     ReceivedAt      int
     ProcessedAt     int
+
+    LogID           int
 }
 
 var kafkaAddress = "composed-firefly-12504-eu2-kafka.upstash.io:9092"
