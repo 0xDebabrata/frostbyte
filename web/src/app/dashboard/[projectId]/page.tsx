@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import GeneralProjectDashboard from "@/components/dashboard/General";
 import Jobs from "@/components/dashboard/Jobs";
+import Logs from "@/components/dashboard/Logs";
 import { Project } from "@/utils/types"
 
 function classNames(...classes: string[]) {
@@ -127,6 +128,11 @@ export default function ProjectPage({ params }: ProjectPageParams) {
           )}
           {navigation.filter(item => item.current)[0].name === "Jobs" && (
             <Jobs
+              projectId={projectId}
+            />
+          )}
+          {navigation.filter(item => item.current)[0].name === "Logs" && (
+            <Logs
               projectId={projectId}
             />
           )}

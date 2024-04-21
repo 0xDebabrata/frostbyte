@@ -110,6 +110,7 @@ Deno.serve(async (req) => {
       .insert({
         status: "failed",
         job_id: jobData.id,
+        project_id: jobData.project_id,
         user_id: jobData.user_id,
         metadata: job,
         message: `Ignoring large file: ${data.record.metadata.size} bytes`

@@ -56,7 +56,9 @@ export default function Jobs({ projectId }: JobsProps) {
       .select(
         "id, name, created_at, input_bucket, output_bucket, format, resolution, quality"
       )
+      .eq("project_id", projectId)
       .order("created_at", { ascending: false });
+
     if (error) {
       console.error(error);
       return;
@@ -84,14 +86,14 @@ export default function Jobs({ projectId }: JobsProps) {
       <div className="flex flex-row items-center">
         <button
           onClick={() => setOpenPanel(true)}
-          className="mt-5 rounded-md py-1 px-3 bg-teal-700 border border-teal-500 text-white text-xs"
+          className="rounded-md py-1 px-3 bg-teal-700 border border-teal-500 text-white text-xs"
         >
           New
         </button>
 
         <button
           onClick={() => setRefresh(!refresh)}
-          className="transition ease-in-out delay-150 mt-5 ml-4 bg-teal-700 bg-opacity-0 flex flex-row items-center rounded-md py-1 pr-2 text-white text-xs hover:bg-opacity-40 duration-200"
+          className="transition ease-in-out delay-150 ml-4 bg-teal-700 bg-opacity-0 flex flex-row items-center rounded-md py-1 pr-2 text-white text-xs hover:bg-opacity-40 duration-200"
         >
           {loading ? (
             <Loader />
@@ -101,7 +103,7 @@ export default function Jobs({ projectId }: JobsProps) {
           Refresh
         </button>
       </div>
-      <div className="pt-10 flex flex-col">
+      <div className="pt-5 flex flex-col">
         {jobs.map((job) => (
           <div
             key={job.id}
@@ -145,7 +147,7 @@ export default function Jobs({ projectId }: JobsProps) {
                 </span>
               </p>
               <p className="font-light text-sm text-neutral-400">
-                Created at:{" "}
+                Created:{" "}
                 <span className="font-light text-sm text-neutral-100">
                   {formatDate(job.created_at!)}
                 </span>
