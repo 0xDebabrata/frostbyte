@@ -103,16 +103,17 @@ func getTranscodingVideoAudioCodecs(
 
 func probeInputVideoData(
     inputFileName string,
-) *ffprobe.ProbeData {
+) (*ffprobe.ProbeData, error) {
     ctx, cancelFn := context.WithTimeout(context.Background(), 5*time.Second)
     defer cancelFn()
 
     // Read input video and audio codecs
     ffprobeOutput, err := ffprobe.ProbeURL(ctx, inputFileName)
     if err != nil {
+        return ffprobeOutput, err
         log.Panicf("Error probing video file: %v", err)
     }
-    return ffprobeOutput
+    return ffprobeOutput, nil
 }
 
 func processVideo(

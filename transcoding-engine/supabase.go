@@ -47,7 +47,7 @@ func initialiseStorageClient(supabaseProjectCreds SupabaseProjectDetails) *stora
     return storageClient
 }
 
-func getUserProjectDetails(id int8) SupabaseProjectDetails {
+func getUserProjectDetails(id int8) (SupabaseProjectDetails, error) {
     client := getSupabaseAdmin()
     data, _, err := client.
                         From("decrypted_supabase_projects").
@@ -56,16 +56,18 @@ func getUserProjectDetails(id int8) SupabaseProjectDetails {
                         Single().
                         Execute()
 
-    if err != nil {
-        log.Fatalf("Error fetching project details from Supabase: %v", err)
-    }
-
     var projectDetails SupabaseProjectDetails
-    if err = json.Unmarshal(data, &projectDetails); err != nil {
+    if err != nil {
+        return projectDetails, err
         log.Fatalf("Error fetching project details from Supabase: %v", err)
     }
 
-    return projectDetails
+    if err = json.Unmarshal(data, &projectDetails); err != nil {
+        return projectDetails, err
+        log.Fatalf("Error fetching project details from Supabase: %v", err)
+    }
+
+    return projectDetails, nil
 }
 
 func downloadInputFile(
@@ -73,16 +75,18 @@ func downloadInputFile(
     filepath string,
     localFilepath string,
     supabaseProjectCreds SupabaseProjectDetails,
-) {
+) error {
     storageClient := initialiseStorageClient(supabaseProjectCreds)
     result, err := storageClient.DownloadFile(bucketId, filepath)
     if err != nil {
+        return err
         log.Fatalf("Error downloading file: %v", err)
     }
 
     // Write file to disk
     // 0644 -> we can read and write but other users can only read
     err = os.WriteFile(localFilepath, result, 0644)
+    return err
 }
 
 func logUpdate(
@@ -113,10 +117,11 @@ func uploadOutputFile(
     filepath string,
     localFilepath string,
     supabaseProjectCreds SupabaseProjectDetails,
-) {
+) error {
     storageClient := initialiseStorageClient(supabaseProjectCreds)
     f, err := os.Open(localFilepath)
     if err != nil {
+        return err
         log.Fatalf("Error opening file: %v", err)
     }
 
@@ -129,7 +134,9 @@ func uploadOutputFile(
         ContentType: &defaultContentType,
     })
     if err != nil {
+        return err
         log.Fatalf("Error uploading file: %v", err)
     }
     log.Println(result)
+    return nil
 }

@@ -13,13 +13,20 @@ func handleError(err error, msg string) {
     }
 }
 
+func logErrorToSupabase(logUpdateParam *LogUpdate, message string) {
+    logUpdateParam.status = "failed"
+    logUpdateParam.message = message
+    logUpdate(*logUpdateParam)
+}
+
 func createDirectory(path string) {
     os.MkdirAll(path, os.ModePerm)
 }
 
-func cleanup(path string) {
+func cleanup(path string) error {
     err := os.Remove(path)
-    handleError(err, "Could not remove file")
+    return err
+    // handleError(err, "Could not remove file")
 }
 
 func getEnv(key string) string {
@@ -27,4 +34,3 @@ func getEnv(key string) string {
     handleError(err, "Error loading .env file")
     return os.Getenv(key)
 }
-

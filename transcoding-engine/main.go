@@ -33,12 +33,20 @@ func main() {
     for {
         select {
         case job := <-jobsChannel:
-            projectDetails := getUserProjectDetails(job.ProjectId)
             logUpdateParam := LogUpdate{
                 status: "processing",
                 processed: false,
                 message: "",
                 logId: job.LogID,
+            }
+
+            projectDetails, err := getUserProjectDetails(job.ProjectId)
+            if err != nil {
+                logErrorToSupabase(
+                    &logUpdateParam,
+                    fmt.Sprintf("Error while fetching Supabase project credentials: %v", err),
+                )
+                break
             }
             logUpdate(logUpdateParam)
 
@@ -46,16 +54,30 @@ func main() {
             localOutputPath := fmt.Sprintf("%s/output_%s_%s", tempDirectory, time.Now().String(), job.ObjectName)
 
             // Download input file
-            downloadInputFile(
+            err = downloadInputFile(
                 job.InputBucketId,
                 job.ObjectName,
                 localFilePath,
                 projectDetails,
             )
+            if err != nil {
+                logErrorToSupabase(
+                    &logUpdateParam,
+                    fmt.Sprintf("Error downloading file: %v", err),
+                )
+                break
+            }
             log.Println("Downloaded file")
 
             // Conversion process
-            inputVideoData := probeInputVideoData(localFilePath)
+            inputVideoData, err := probeInputVideoData(localFilePath)
+            if err != nil {
+                logErrorToSupabase(
+                    &logUpdateParam,
+                    fmt.Sprintf("Error probing file: %v", err),
+                )
+                break
+            }
             processVideo(
                 localFilePath,
                 localOutputPath,
@@ -65,17 +87,38 @@ func main() {
             log.Println("File processed")
 
             // Upload converted file
-            uploadOutputFile(
+            err = uploadOutputFile(
                 job.OutputBucketId,
                 fmt.Sprintf("frostbyte_output_%s", job.ObjectName),
                 localOutputPath,
                 projectDetails,
             )
+            if err != nil {
+                logErrorToSupabase(
+                    &logUpdateParam,
+                    fmt.Sprintf("Error uploading file: %v", err),
+                )
+                break
+            }
             log.Println("File uploaded")
 
             // Remove temporary files
-            cleanup(localFilePath)
-            cleanup(localOutputPath)
+            err = cleanup(localFilePath)
+            if err != nil {
+                logErrorToSupabase(
+                    &logUpdateParam,
+                    fmt.Sprintf("Error removing input file: %v", err),
+                )
+                break
+            }
+            err = cleanup(localOutputPath)
+            if err != nil {
+                logErrorToSupabase(
+                    &logUpdateParam,
+                    fmt.Sprintf("Error removing output file: %v", err),
+                )
+                break
+            }
 
             logUpdateParam.processed = true
             logUpdateParam.status = "complete"
