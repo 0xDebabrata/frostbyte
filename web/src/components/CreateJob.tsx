@@ -39,7 +39,7 @@ export default function CreateJobForm({
 
   const outputResolutionChoices = [
     "Original",
-    "4k",
+    // "4k",
     "1080p",
     "720p",
     "480p",
