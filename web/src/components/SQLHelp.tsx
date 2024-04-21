@@ -45,7 +45,7 @@ export default function SQLHelp() {
           />
         </div>
       </div>
-      <div className="my-4 p-2 px-4 rounded-md bg-red-400/10 ring-1 ring-inset ring-red-400/20">
+      <div className="my-4 p-2 px-4 rounded-md bg-yellow-400/10 ring-1 ring-inset ring-red-400/20">
         <p className="text-sm font-medium text-red-400">
           Replace <code className="mx-2 px-1">FROSTBYTE_API_KEY</code> and{" "}
           <code className="mx-2 px-1">JOB_ID</code> before running this.
