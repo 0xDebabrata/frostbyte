@@ -29,8 +29,8 @@ export default function CreateJobForm({
 
   const outputFormatChoices = [
     "Original",
-    "H.264",
-    "H.265",
+    "H264",
+    "H265",
     // "VP9",
   ];
   const [outputFormat, setOutputFormat] = useState(outputFormatChoices[0]);
