@@ -12,10 +12,12 @@ interface CreateJobFormProps {
   open: boolean;
   projectId: number;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  refresh: boolean;
+  setRefresh: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function CreateJobForm({
-  buckets, open, projectId, setOpen,
+  buckets, open, projectId, setOpen, refresh, setRefresh,
 }: CreateJobFormProps) {
   const [loading, setLoading] = useState(false)
 
@@ -91,6 +93,7 @@ export default function CreateJobForm({
       duration: 8000
     })
     setLoading(false)
+    setRefresh(!refresh)
     setOpen(false)
   }
 

@@ -161,6 +161,8 @@ export default function Jobs({ projectId }: JobsProps) {
         open={openPanel}
         projectId={projectId}
         setOpen={setOpenPanel}
+        refresh={refresh}
+        setRefresh={setRefresh}
       />
     </div>
   );
