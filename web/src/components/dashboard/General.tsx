@@ -91,6 +91,17 @@ export default function GeneralProjectDashboard({
         Instructions
       </h2>
       <SQLHelp />
+      <h2 className="mt-1 text-neutral-100 text-xl">
+        Things to know
+      </h2>
+      <ul className='py-4 list-disc list-inside'>
+        <li className='pl-4 font-light text-white/50 pb-2'>
+          Enable webhooks on your supabase project. Go to Database -&gt; Platform -&gt; Webhooks.
+        </li>
+        <li className='pl-4 font-light text-white/50 pb-2'>
+          Due to resource constraints, files larger than 25MB will not be processed.
+        </li>
+      </ul>
     </div>
   )
 }
