@@ -10,18 +10,21 @@ export const POST = async (req: Request, res: Response) => {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SECRET_KEY!,
   )
+  console.log("Here")
 
   const { data: { user }, error } = await supabase.auth.getUser()
   if (error) {
     console.error(error)
     return new NextResponse(JSON.stringify({ error: error.message }), { status: 500 })
   }
+  console.log("Here 2")
 
   if (!user) {
     return new NextResponse(JSON.stringify({
       error: "Not authorized"
     }), { status: 403 })
   }
+  console.log("Here 3")
 
   const {
     name,
