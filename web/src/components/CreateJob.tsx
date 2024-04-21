@@ -1,36 +1,29 @@
-import { Dispatch, Fragment, SetStateAction, useState } from 'react'
+import { Dispatch, FormEvent, Fragment, SetStateAction, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
 import Dropdown from "@/components/Dropdown";
 import Loader from '@/components/Loader';
+import toast from 'react-hot-toast';
 
 interface CreateJobFormProps {
+  buckets: string[];
   open: boolean;
+  projectId: number;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function CreateJobForm({
-  open, setOpen,
+  buckets, open, projectId, setOpen,
 }: CreateJobFormProps) {
   const [loading, setLoading] = useState(false)
 
-  const inputBucketChoices = [
-    "Durward Reynolds",
-    "Debarghya Mondal",
-    "Therese Wunsch",
-    "Benedict Kessler",
-    "Katelyn Rohan",
-  ];
+  const [name, setName] = useState("")
+
+  const inputBucketChoices = buckets
   const [inputBucket, setInputBucket] = useState("");
 
-  const outputBucketChoices = [
-    "Durward Reynolds",
-    "Debarghya Mondal",
-    "Therese Wunsch",
-    "Benedict Kessler",
-    "Katelyn Rohan",
-  ];
+  const outputBucketChoices = buckets
   const [outputBucket, setOutputBucket] = useState("");
 
   const outputFormatChoices = [
@@ -57,6 +50,48 @@ export default function CreateJobForm({
     "Low",
   ];
   const [outputQuality, setOutputQuality] = useState(outputQualityChoices[0]);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    if (
+      !name ||
+      !inputBucket ||
+      !outputBucket ||
+      !outputFormat ||
+      !outputResolution ||
+      !outputQuality ||
+      !name.trim() ||
+      !inputBucket.trim() ||
+      !outputBucket.trim() ||
+      !outputFormat.trim() ||
+      !outputResolution.trim() ||
+      !outputQuality.trim()
+    ) {
+      toast.error("Please fill all the details")
+      return
+    }
+
+    setLoading(true)
+
+    await fetch("/api/project/job", {
+      method: "POST",
+      body: JSON.stringify({
+        projectId,
+        name,
+        inputBucket,
+        outputBucket,
+        outputFormat,
+        outputResolution,
+        outputQuality,
+      })
+    })
+
+    toast.success("Job created! Please follow further integration instructions", {
+      duration: 8000
+    })
+    setLoading(false)
+    setOpen(false)
+  }
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -107,16 +142,40 @@ export default function CreateJobForm({
                     </div>
 
                     <div className="relative mt-6 flex-1 px-4 sm:px-6">
-                      <form className="w-full">
+                      <form
+                        className="w-full"
+                        onSubmit={handleSubmit}
+                      >
                         <div>
                           <div className="border-b border-gray-900/10 pb-12">
                             <p className="mt-1 text-sm leading-6 text-neutral-400">
-                              Use this form to select job parameters for this project
+                              Configure transcoding parameters for videos uploaded to your input bucket.
                             </p>
-
                             <div className="mt-4">
-                              {/* Input bucket  */}
+                              {/* Job name */}
                               <div>
+                                <label
+                                  htmlFor="username"
+                                  className="block text-sm font-medium leading-6 text-neutral-200"
+                                >
+                                  Job name
+                                </label>
+                                <div className="mt-2">
+                                  <input
+                                    type="text"
+                                    name="name"
+                                    id="name"
+                                    className="block w-full rounded-md border-0 py-1.5 text-neutral-200 bg-neutral-700 shadow-sm ring-1 ring-inset ring-neutral-600 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-neutral-400 sm:text-sm sm:leading-6"
+                                    placeholder="netflix-01"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    required
+                                  />
+                                </div>
+                              </div>
+
+                              {/* Input bucket  */}
+                              <div className="mt-4">
                                 <label
                                   htmlFor="username"
                                   className="block text-sm font-medium leading-6 text-neutral-200"
@@ -130,6 +189,11 @@ export default function CreateJobForm({
                                     setSelectedOption={setInputBucket}
                                   />
                                 </div>
+                                {!buckets.length ? (
+                                  <p className="mt-2 text-xs text-neutral-400" id="email-description">
+                                    Linked Supabase project doesn&apos;t have any buckets
+                                  </p>
+                                ) : null}
                               </div>
 
                               {/* Output bucket */}
@@ -147,6 +211,11 @@ export default function CreateJobForm({
                                     setSelectedOption={setOutputBucket}
                                   />
                                 </div>
+                                {!buckets.length ? (
+                                  <p className="mt-2 text-xs text-neutral-400" id="email-description">
+                                    Linked Supabase project doesn&apos;t have any buckets
+                                  </p>
+                                ) : null}
                               </div>
 
                               {/* Output format  */}
@@ -203,7 +272,7 @@ export default function CreateJobForm({
                           </div>
                         </div>
                         <button
-                          onClick={() => setOpen(false)}
+                          type='submit'
                           disabled={loading}
                           className="w-full flex items-center justify-center rounded py-2 px-3 bg-teal-700 border border-teal-500 text-white text-sm"
                         >

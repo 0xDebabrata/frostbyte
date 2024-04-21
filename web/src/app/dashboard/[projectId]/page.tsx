@@ -1,24 +1,26 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from "react"
-
-import { createClient } from '@/utils/supabase/client'
-import GeneralProjectDashboard from "@/components/dashboard/General"
-import Jobs from "@/components/dashboard/Jobs"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+        
+import { createClient } from "@/utils/supabase/client";
+import GeneralProjectDashboard from "@/components/dashboard/General";
+import Jobs from "@/components/dashboard/Jobs";
 import { Project } from "@/utils/types"
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 interface ProjectPageParams {
   params: {
-    [k:string]: string;
+    [k: string]: string;
   };
 }
 
 export default function ProjectPage({ params }: ProjectPageParams) {
   const supabase = createClient()
+  const router = useRouter();
 
   const projectId = parseInt(params["projectId"])
   const [projectLoading, setProjectLoading] = useState(true)
@@ -31,15 +33,27 @@ export default function ProjectPage({ params }: ProjectPageParams) {
   ])
 
   const updateNavigation = (idx: number) => {
-    setNavigation(prev => {
-      const updatedNav = prev.map(item => {
-        item.current = false
-        return item
-      })
-      updatedNav[idx].current = true
-      return updatedNav
-    })
-  }
+    setNavigation((prev) => {
+      const updatedNav = prev.map((item) => {
+        item.current = false;
+        return item;
+      });
+      updatedNav[idx].current = true;
+      return updatedNav;
+    });
+  };
+
+  // Redirect to login if user not signed in
+  useEffect(() => {
+    const redirectLoggedOutUser = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (!data.session) {
+        router.push("/");
+      }
+    };
+
+    redirectLoggedOutUser();
+  }, []);
 
   const fetchProjectDetails = async () => {
     const { data } = await supabase
@@ -88,9 +102,9 @@ export default function ProjectPage({ params }: ProjectPageParams) {
                         item.current
                           ? 'bg-neutral-700 text-neutral-100'
                           : 'text-white hover:bg-neutral-700 hover:bg-opacity-75',
-                        'rounded-md px-3 py-1 border border-neutral-600 text-sm duration-150 cursor-pointer'
+                        'rounded-md px-4 py-1 border border-neutral-600 text-sm duration-150 cursor-pointer'
                       )}
-                      aria-current={item.current ? 'page' : undefined}
+                      aria-current={item.current ? "page" : undefined}
                       onClick={() => updateNavigation(idx)}
                     >
                       {item.name}
@@ -112,10 +126,12 @@ export default function ProjectPage({ params }: ProjectPageParams) {
             />
           )}
           {navigation.filter(item => item.current)[0].name === "Jobs" && (
-            <Jobs />
+            <Jobs
+              projectId={projectId}
+            />
           )}
         </div>
       </main>
     </div>
-  )
+  );
 }

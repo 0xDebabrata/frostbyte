@@ -2,6 +2,7 @@ import { Dispatch, FormEvent, Fragment, SetStateAction, useRef, useState } from 
 import { Dialog, Transition } from '@headlessui/react'
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import Loader from '../Loader';
 
 interface CreateProjectModalProps {
   open: boolean;
@@ -14,6 +15,7 @@ export default function CreateProjectModal({
 }: CreateProjectModalProps) {
   const router = useRouter()
 
+  const [loading, setLoading] = useState(false)
   const [name, setName] = useState("")
   const [supabaseUrl, setSupabaseUrl] = useState("")
   const [supabaseKey, setSupabaseKey] = useState("")
@@ -28,6 +30,7 @@ export default function CreateProjectModal({
       return
     }
 
+    setLoading(true)
     const resp = await fetch("/api/project/create", {
       method: "POST",
       body: JSON.stringify({
@@ -37,9 +40,9 @@ export default function CreateProjectModal({
       })
     })
     const { projectId } = await resp.json()
-    router.push(`/dashboard/${projectId}`)
-
     toast.success("Project created successfully")
+    router.push(`/dashboard/${projectId}`)
+    setLoading(false)
   }
 
   return (
@@ -134,10 +137,12 @@ export default function CreateProjectModal({
                   <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                     <button
                       type="submit"
+                      disabled={loading}
                       className="inline-flex w-full justify-center rounded-md bg-teal-700 px-3 py-2 text-sm text-white shadow-sm hover:bg-teal-600 duration-150 border border-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
                       onClick={createProject}
                     >
                       Create
+                      {loading && <Loader />}
                     </button>
                     <button
                       type="button"

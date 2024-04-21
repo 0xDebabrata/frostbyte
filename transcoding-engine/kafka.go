@@ -1,11 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"context"
+	"crypto/tls"
+	"encoding/json"
 	"log"
 
 	"github.com/segmentio/kafka-go"
+	"github.com/segmentio/kafka-go/sasl/scram"
 )
 
 type Job struct {
@@ -24,7 +26,7 @@ type Job struct {
     ProcessedAt     int
 }
 
-var kafkaAddress = "localhost:9092"
+var kafkaAddress = "composed-firefly-12504-eu2-kafka.upstash.io:9092"
 var topicNameMap = map[string] string{
     "jobs": "jobs",
 }
@@ -35,12 +37,19 @@ func createTopic(name string) {
     if err != nil {
         panic(err.Error())
     }
+    log.Println("Topic created")
 }
 
 func produceJob(job Job) {
+    mechanism, _ := scram.Mechanism(scram.SHA256, getEnv("KAFKA_USERNAME"), getEnv("KAFKA_PASSWORD"))
+
     w := &kafka.Writer{
         Addr: kafka.TCP(kafkaAddress),
         Topic: topicNameMap["jobs"],
+        Transport: &kafka.Transport{
+            SASL: mechanism,
+            TLS: &tls.Config{},
+        },
     }
     jobBytes, _ := json.Marshal(job)
 
@@ -63,11 +72,17 @@ func produceJob(job Job) {
 }
 
 func readJob(jobsChannel chan<- Job) {
+    mechanism, _ := scram.Mechanism(scram.SHA256, getEnv("KAFKA_USERNAME"), getEnv("KAFKA_PASSWORD"))
+
     r := kafka.NewReader(kafka.ReaderConfig{
         Brokers: []string{kafkaAddress},
         Topic: topicNameMap["jobs"],
         GroupID: "jobs-reader-1",
-        MaxBytes: 5e6,  // 5 MB
+        MaxBytes: 1e6,  // 5 MB
+        Dialer: &kafka.Dialer{
+            SASLMechanism: mechanism,
+            TLS: &tls.Config{},
+        },
     })
 
     for {

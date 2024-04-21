@@ -9,7 +9,8 @@ import Loader from "@/components/Loader";
 import { Project } from "@/utils/types";
 
 export default function Dashboard() {
-  const router = useRouter()
+  const supabase = createClient();
+  const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -29,15 +30,10 @@ export default function Dashboard() {
 
   const fetchProjects = async () => {
     setLoading(true);
-    const supabase = createClient();
 
     const { data: supabaseProjects, error } = await supabase
       .from("supabase_projects")
       .select("id, name, connected_at");
-
-    if (!error) {
-      console.error(error);
-    }
 
     if (supabaseProjects) {
       setProjects(supabaseProjects);
@@ -45,9 +41,21 @@ export default function Dashboard() {
     setLoading(false);
   };
 
+  // Redirect to login if user not signed in
+  useEffect(() => {
+    const redirectLoggedOutUser = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (!data.session) {
+        router.push("/");
+      }
+    };
+
+    redirectLoggedOutUser();
+  }, []);
+
   const redirectToProject = (projectId: number) => {
-    router.push(`/dashboard/${projectId}`)
-  }
+    router.push(`/dashboard/${projectId}`);
+  };
 
   useEffect(() => {
     fetchProjects();

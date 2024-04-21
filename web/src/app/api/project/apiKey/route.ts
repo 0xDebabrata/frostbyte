@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server";
 
 import { createClient } from "@/utils/supabase/server";
-import { createClient as createAdminClient } from "@/utils/supabase/admin";
 
 export const GET = async (req: Request, res: Response) => {
   const supabase = createClient()
-  const supabaseAdmin = createAdminClient()
 
   const { data: { user }, error } = await supabase.auth.getUser()
   if (error) {
@@ -28,7 +26,7 @@ export const GET = async (req: Request, res: Response) => {
     }), { status: 400 })
   }
 
-  const { data, error: adminError } = await supabaseAdmin
+  const { data, error: adminError } = await supabase
     .from("decrypted_api_keys")
     .select("decrypted_api_key")
     .eq("project_id", projectId)

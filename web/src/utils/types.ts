@@ -5,3 +5,10 @@ export interface Project {
   supabase_url?: string;
   connected_at?: string;
 }
+
+export interface Bucket {
+  id: string;
+  name: string;
+  public: boolean;
+}
+

@@ -11,7 +11,7 @@ func main() {
     createDirectory(tempDirectory)
 
     jobsChannel := make(chan Job)
-    createTopic(topicNameMap["jobs"])
+    // createTopic(topicNameMap["jobs"])
     produceJob(Job{
         Id: "1",
         UserId: "49bd29e9-9da6-461c-a5fa-67412f6a7e32",

@@ -19,7 +19,14 @@ export const POST = async (req: Request, res: Response) => {
 
   const { name, supabaseUrl, supabaseKey } = await req.json()
 
-  if (!name.trim() || !supabaseUrl.trim() || !supabaseKey.trim()) {
+  if (
+    !name ||
+    !supabaseUrl ||
+    !supabaseKey ||
+    !name.trim() ||
+    !supabaseUrl.trim() ||
+    !supabaseKey.trim()
+  ) {
     return new NextResponse(JSON.stringify({
       error: "Please provide all project details"
     }), { status: 400 })
