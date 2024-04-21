@@ -30,9 +30,6 @@ Deno.serve(async (req) => {
 
   const { projectId } = await req.json()
 
-  console.log("User", user)
-  console.log("Project ID", projectId)
-
   const { data: projectDetails, error: sqlError } = await supabaseClient
     .from('decrypted_supabase_projects')
     .select('supabase_url, decrypted_supabase_secret_key')
@@ -59,8 +56,6 @@ Deno.serve(async (req) => {
     .storage
     .listBuckets()
 
-  console.log("Buckets", buckets)
-   
   if (storageError) {
     console.error(storageError)
     return new Response(
