@@ -11,18 +11,23 @@ import (
 	"gopkg.in/vansante/go-ffprobe.v2"
 )
 
-var videoCodecMap = map[string]string{
-	"original": "copy",
-	"h264":     "libx264",
-	"h265":     "libx265",
-}
-
-var videoResolutions = map[string]int{
-	"4k":    4096,
-	"1080p": 1080,
-	"720p":  720,
-	"480p":  480,
-}
+var (
+	videoCodecMap = map[string]string{
+		"original": "copy",
+		"h264":     "libx264",
+		"h265":     "libx265",
+	}
+	audioCodecMap = map[string]string{
+		"original": "copy",
+		"opus":     "libopus",
+	}
+	videoResolutions = map[string]int{
+		"4k":    4096,
+		"1080p": 1080,
+		"720p":  720,
+		"480p":  480,
+	}
+)
 
 func buildffmpegCommand(
 	inputFileName string,
@@ -30,7 +35,7 @@ func buildffmpegCommand(
 	job *Job,
 	ffprobeOutput *ffprobe.ProbeData,
 ) *exec.Cmd {
-	videoCodecArg, audioCodecArg := getTranscodingVideoAudioCodecs(inputFileName, job, ffprobeOutput)
+	videoCodecArg, audioCodecArg := getTranscodingVideoAudioCodecs(job, ffprobeOutput)
 
 	if job.Resolution == "original" {
 		// Do not set scale filter
@@ -74,10 +79,10 @@ func generateScaleFilter(
 }
 
 func getTranscodingVideoAudioCodecs(
-	inputFileName string,
 	job *Job,
 	ffprobeOutput *ffprobe.ProbeData,
 ) (string, string) {
+	log.Printf("%v\n", ffprobeOutput.FirstAudioStream())
 	inputVideoCodec := ffprobeOutput.FirstVideoStream().CodecName
 	inputAudioCodec := ffprobeOutput.FirstAudioStream().CodecName
 
@@ -88,9 +93,11 @@ func getTranscodingVideoAudioCodecs(
 	if job.VideoCodec != "original" && job.VideoCodec != inputVideoCodec {
 		outputVideoCodec = videoCodecMap[job.VideoCodec]
 	}
-	outputAudioCodec := "aac"
-	if inputAudioCodec == outputAudioCodec {
-		outputAudioCodec = "copy"
+	outputAudioCodec := "copy"
+	if job.AudioCodec != "original" && job.AudioCodec != inputAudioCodec {
+		// TODO: Handle job.AudioCodec not supported in audioCodecMap
+		// TODO: Handle similar situation with videoCodecMap
+		outputAudioCodec = audioCodecMap[job.AudioCodec]
 	}
 
 	// If video resolution needs changing, video codec cannot be set to copy
@@ -111,8 +118,8 @@ func probeInputVideoData(
 	// Read input video and audio codecs
 	ffprobeOutput, err := ffprobe.ProbeURL(ctx, inputFileName)
 	if err != nil {
-		return ffprobeOutput, err
 		log.Panicf("Error probing video file: %v", err)
+		return ffprobeOutput, err
 	}
 	return ffprobeOutput, nil
 }

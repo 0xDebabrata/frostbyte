@@ -21,6 +21,7 @@ type Job struct {
 	ObjectName     string
 	OutputBucketId string
 	VideoCodec     string
+	AudioCodec     string
 	Resolution     string
 	Quality        string
 
