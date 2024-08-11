@@ -11,97 +11,99 @@ import (
 )
 
 type Job struct {
-    Id              string
-    UserId          string
+	Version int8
 
-    ProjectId       int8
-    InputBucketId   string
-    ObjectName      string
-    OutputBucketId  string
-    VideoCodec      string
-    Resolution      string
-    Quality         string
+	Id     string
+	UserId string
 
-    ReceivedAt      int
-    ProcessedAt     int
+	ProjectId      int8
+	InputBucketId  string
+	ObjectName     string
+	OutputBucketId string
+	VideoCodec     string
+	Resolution     string
+	Quality        string
 
-    LogID           int
+	ReceivedAt  int
+	ProcessedAt int
+
+	LogID int
 }
 
-var kafkaAddress = "composed-firefly-12504-eu2-kafka.upstash.io:9092"
-var topicNameMap = map[string] string{
-    "jobs": "jobs",
+var kafkaAddress = getEnv("KAFKA_ADDRESS")
+var topicNameMap = map[string]string{
+	"jobs": "jobs",
 }
 
 func createTopic(name string) {
-    // to create topics when auto.create.topics.enable='true'
-    _, err := kafka.DialLeader(context.Background(), "tcp", kafkaAddress, name, 0)
-    if err != nil {
-        panic(err.Error())
-    }
-    log.Println("Topic created")
+	// to create topics when auto.create.topics.enable='true'
+	_, err := kafka.DialLeader(context.Background(), "tcp", kafkaAddress, name, 0)
+	if err != nil {
+		panic(err.Error())
+	}
+	log.Println("Topic created")
 }
 
 func produceJob(job Job) {
-    mechanism, _ := scram.Mechanism(scram.SHA256, getEnv("KAFKA_USERNAME"), getEnv("KAFKA_PASSWORD"))
+	mechanism, _ := scram.Mechanism(scram.SHA256, getEnv("KAFKA_USERNAME"), getEnv("KAFKA_PASSWORD"))
 
-    w := &kafka.Writer{
-        Addr: kafka.TCP(kafkaAddress),
-        Topic: topicNameMap["jobs"],
-        Transport: &kafka.Transport{
-            SASL: mechanism,
-            TLS: &tls.Config{},
-        },
-    }
-    jobBytes, _ := json.Marshal(job)
+	w := &kafka.Writer{
+		Addr:  kafka.TCP(kafkaAddress),
+		Topic: topicNameMap["jobs"],
+		Transport: &kafka.Transport{
+			SASL: mechanism,
+			TLS:  &tls.Config{},
+		},
+	}
+	jobBytes, _ := json.Marshal(job)
 
-    err := w.WriteMessages(context.Background(),
-        kafka.Message{
-            Key: []byte(job.Id),
-            Value: jobBytes,
-        },
-    )
+	err := w.WriteMessages(context.Background(),
+		kafka.Message{
+			Key:   []byte(job.Id),
+			Value: jobBytes,
+		},
+	)
 
-    if err != nil {
-        log.Fatalln("Failed to write messages to kafka:", err)
-    }
+	if err != nil {
+		log.Fatalln("Failed to write messages to kafka:", err)
+	}
 
-    if err := w.Close(); err != nil {
-        log.Fatalln("Failed to close writer:", err)
-    }
+	if err := w.Close(); err != nil {
+		log.Fatalln("Failed to close writer:", err)
+	}
 
-    log.Println("Job added to queue.")
+	log.Println("Job added to queue.")
 }
 
 func readJob(jobsChannel chan<- Job) {
-    mechanism, _ := scram.Mechanism(scram.SHA256, getEnv("KAFKA_USERNAME"), getEnv("KAFKA_PASSWORD"))
+	mechanism, _ := scram.Mechanism(scram.SHA256, getEnv("KAFKA_USERNAME"), getEnv("KAFKA_PASSWORD"))
 
-    r := kafka.NewReader(kafka.ReaderConfig{
-        Brokers: []string{kafkaAddress},
-        Topic: topicNameMap["jobs"],
-        GroupID: "jobs-reader-1",
-        MaxBytes: 1e6,  // 5 MB
-        Dialer: &kafka.Dialer{
-            SASLMechanism: mechanism,
-            TLS: &tls.Config{},
-        },
-    })
+	r := kafka.NewReader(kafka.ReaderConfig{
+		Brokers:  []string{kafkaAddress},
+		Topic:    topicNameMap["jobs"],
+		GroupID:  "jobs-reader-1",
+		MaxBytes: 1e6, // 5 MB
+		Dialer: &kafka.Dialer{
+			SASLMechanism: mechanism,
+			TLS:           &tls.Config{},
+		},
+	})
 
-    for {
-        m, err := r.ReadMessage(context.Background())
-        if err != nil {
-            log.Fatalln("Failed to read message from kafka:", err)
-            break
-        }
+	for {
+		m, err := r.ReadMessage(context.Background())
+		if err != nil {
+			log.Fatalln("Failed to read message from kafka:", err)
+			break
+		}
 
-        job := Job{}
-        json.Unmarshal(m.Value, &job)
-        jobsChannel <- job
+		job := Job{}
+		json.Unmarshal(m.Value, &job)
+		jobsChannel <- job
 
-        log.Printf("Offset: %d\nJob ID: %s\n", m.Offset, job.Id)
-    }
+		log.Printf("Offset: %d\nJob ID: %s\n", m.Offset, job.Id)
+	}
 
-    if err := r.Close(); err != nil {
-        log.Fatalln("Failed to close reader:", err)
-    }
+	if err := r.Close(); err != nil {
+		log.Fatalln("Failed to close reader:", err)
+	}
 }
