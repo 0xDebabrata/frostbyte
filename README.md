@@ -6,7 +6,7 @@ Frostbyte is complete with a web-interface for creating and monitoring current j
 
 [Demo video](https://youtu.be/wFkGHitxUss)
 
-[Visit the site to try it out yourself!](https://github.com/0xDebabrata/frostbyte)
+[Visit the site to try it out yourself!](https://frostbyte.vercel.app)
 
 ### How it works:
 
