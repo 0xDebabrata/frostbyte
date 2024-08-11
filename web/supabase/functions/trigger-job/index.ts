@@ -88,6 +88,7 @@ Deno.serve(async (req) => {
   jobData = jobData[0]
 
   let job = {
+    Version: jobData.version,
     Id: jobData.id,
     UserId: jobData.user_id,
     ProjectId: jobData.project_id,
@@ -122,7 +123,7 @@ Deno.serve(async (req) => {
         status: 469,
       },
     )
-  // Ignore non-video files
+    // Ignore non-video files
   } else if (!data.record.metadata.mimetype.startsWith("video")) {
     console.log("Ignoring non-video file", data.record.metadata.mimetype)
     await supabaseClient
@@ -142,8 +143,8 @@ Deno.serve(async (req) => {
         status: 469,
       },
     )
-  // Ignore if inserted file is actually the output from frostbyte.
-  // If input and output buckets are same, this prevents recursion.
+    // Ignore if inserted file is actually the output from frostbyte.
+    // If input and output buckets are same, this prevents recursion.
   } else if (data.record.name.startsWith(frostbyteOutputPrefix)) {
     return new Response(
       JSON.stringify({ message: "Possible recursion" }),
@@ -152,7 +153,7 @@ Deno.serve(async (req) => {
         status: 200,
       },
     )
-  // Ignore if job input bucket is different from the bucket the object was uploaded to
+    // Ignore if job input bucket is different from the bucket the object was uploaded to
   } else if (data.record.bucket_id !== jobData.input_bucket) {
     return new Response(
       JSON.stringify({ error: "Job ID and file upload bucket does not match" }),
@@ -178,7 +179,7 @@ Deno.serve(async (req) => {
   job.LogId = logId
 
   // Push event to kafka
-  await fetch(`https://composed-firefly-12504-eu2-rest-kafka.upstash.io/produce/jobs/${JSON.stringify(job)}`, {
+  await fetch(`${Deno.env.get("KAFKA_ADDRESS")}/produce/jobs/${JSON.stringify(job)}`, {
     headers: {
       Authorization: `Basic ${Deno.env.get("UPSTASH_AUTHORIZATION")}`
     }
@@ -186,7 +187,7 @@ Deno.serve(async (req) => {
   console.log("Event pushed to Kafka")
 
   return new Response(
-    JSON.stringify({ message:'Event pushed to Kafka successfully' }),
+    JSON.stringify({ message: 'Event pushed to Kafka successfully' }),
     {
       headers: { "Content-Type": "application/json" },
       status: 200,

@@ -29,14 +29,6 @@ export default function CreateJobForm({
   const outputBucketChoices = buckets
   const [outputBucket, setOutputBucket] = useState("");
 
-  const outputFormatChoices = [
-    "Original",
-    "H264",
-    "H265",
-    // "VP9",
-  ];
-  const [outputFormat, setOutputFormat] = useState(outputFormatChoices[0]);
-
   const outputResolutionChoices = [
     "Original",
     // "4k",
@@ -45,6 +37,21 @@ export default function CreateJobForm({
     "480p",
   ];
   const [outputResolution, setOutputResolution] = useState(outputResolutionChoices[0]);
+
+  const outputFormatChoices = [
+    "Original",
+    "H264",
+    "H265",
+    // "VP9",
+  ];
+  const [outputFormat, setOutputFormat] = useState(outputFormatChoices[0]);
+
+  const outputAudioFormatChoices = [
+    "Original",
+    "Opus",
+    // "VP9",
+  ];
+  const [outputAudioFormat, setOutputAudioFormat] = useState(outputAudioFormatChoices[0]);
 
   const outputQualityChoices = [
     "Best",
@@ -67,6 +74,7 @@ export default function CreateJobForm({
       !inputBucket.trim() ||
       !outputBucket.trim() ||
       !outputFormat.trim() ||
+      !outputAudioFormat.trim() ||
       !outputResolution.trim() ||
       !outputQuality.trim()
     ) {
@@ -84,6 +92,7 @@ export default function CreateJobForm({
         inputBucket,
         outputBucket,
         outputFormat,
+        outputAudioFormat,
         outputResolution,
         outputQuality,
       })
@@ -222,23 +231,6 @@ export default function CreateJobForm({
                                 ) : null}
                               </div>
 
-                              {/* Output format  */}
-                              <div className="mt-4">
-                                <label
-                                  htmlFor="username"
-                                  className="block text-sm font-medium leading-6 text-neutral-200"
-                                >
-                                  Output format
-                                </label>
-                                <div className="mt-2">
-                                  <Dropdown
-                                    choice={outputFormatChoices}
-                                    selectedOption={outputFormat}
-                                    setSelectedOption={setOutputFormat}
-                                  />
-                                </div>
-                              </div>
-
                               {/* Output resolution  */}
                               <div className="mt-4">
                                 <label
@@ -252,6 +244,40 @@ export default function CreateJobForm({
                                     choice={outputResolutionChoices}
                                     selectedOption={outputResolution}
                                     setSelectedOption={setOutputResolution}
+                                  />
+                                </div>
+                              </div>
+
+                              {/* Output format  */}
+                              <div className="mt-4">
+                                <label
+                                  htmlFor="video-format"
+                                  className="block text-sm font-medium leading-6 text-neutral-200"
+                                >
+                                  Output video format
+                                </label>
+                                <div className="mt-2">
+                                  <Dropdown
+                                    choice={outputFormatChoices}
+                                    selectedOption={outputFormat}
+                                    setSelectedOption={setOutputFormat}
+                                  />
+                                </div>
+                              </div>
+
+                              {/* Output audio format  */}
+                              <div className="mt-4">
+                                <label
+                                  htmlFor="audio-format"
+                                  className="block text-sm font-medium leading-6 text-neutral-200"
+                                >
+                                  Output audio format
+                                </label>
+                                <div className="mt-2">
+                                  <Dropdown
+                                    choice={outputAudioFormatChoices}
+                                    selectedOption={outputAudioFormat}
+                                    setSelectedOption={setOutputAudioFormat}
                                   />
                                 </div>
                               </div>

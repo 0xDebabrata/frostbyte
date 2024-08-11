@@ -28,6 +28,7 @@ export const POST = async (req: Request, res: Response) => {
     inputBucket,
     outputBucket,
     outputFormat,
+    outputAudioFormat,
     outputResolution,
     outputQuality,
     projectId,
@@ -45,6 +46,7 @@ export const POST = async (req: Request, res: Response) => {
     !inputBucket.trim() ||
     !outputBucket.trim() ||
     !outputFormat.trim() ||
+    !outputAudioFormat.trim() ||
     !outputResolution.trim() ||
     !outputQuality.trim()
   ) {
@@ -63,6 +65,7 @@ export const POST = async (req: Request, res: Response) => {
       input_bucket: inputBucket,
       output_bucket: outputBucket,
       format: outputFormat,
+      audio_format: outputAudioFormat,
       resolution: outputResolution,
       quality: outputQuality,
       user_id: user.id,
