@@ -96,6 +96,7 @@ Deno.serve(async (req) => {
     ObjectName: data.record.name,
     OutputBucketId: jobData.output_bucket,
     VideoCodec: jobData.format.toLowerCase(),
+    AudioCodec: jobData.audio_format.toLowerCase(),
     Resolution: jobData.resolution.toLowerCase(),
     Quality: jobData.quality.toLowerCase(),
     ReceivedAt: (new Date()).toISOString(),
